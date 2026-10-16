@@ -1,0 +1,5 @@
+from app.routers.auth import router as auth_router
+from app.routers.episodes import router as episodes_router
+from app.routers.dashboard import router as dashboard_router
+
+__all__ = ["auth_router", "episodes_router", "dashboard_router"]
