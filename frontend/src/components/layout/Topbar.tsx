@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
@@ -18,6 +19,9 @@ export function Topbar() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const { showToast } = useToast();
+  const router = useRouter();
+
+  const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
 
   const notifications = [
@@ -35,23 +39,35 @@ export function Topbar() {
     },
   ];
 
+  const handleGlobalSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <header className="h-16 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-[#0c0c0e]/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-20">
       {/* Global Quick Search */}
-      <div className="flex items-center gap-3 w-72 sm:w-96">
+      <form onSubmit={handleGlobalSearch} className="flex items-center gap-3 w-72 sm:w-96">
         <div className="relative w-full">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
-            placeholder="Search transcripts, clips, or episodes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search transcripts, clips, or episodes (Press Enter)..."
             className="w-full pl-9 pr-8 py-1.5 text-xs rounded-xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-200/60 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-all"
           />
-          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-[10px] font-mono text-zinc-500">
+          <button
+            type="submit"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-[10px] font-mono text-zinc-500 hover:text-brand-500 transition-colors"
+          >
             <Command className="w-2.5 h-2.5" />
-            <span>K</span>
-          </div>
+            <span>↵</span>
+          </button>
         </div>
-      </div>
+      </form>
 
       {/* Right Actions */}
       <div className="flex items-center gap-2.5">
