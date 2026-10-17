@@ -26,8 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check saved session on load
     const savedToken = localStorage.getItem("auth_token");
     const savedUser = localStorage.getItem("auth_user");
+    const isLoggedOut = localStorage.getItem("user_logged_out") === "true";
 
-    if (savedToken && savedUser) {
+    if (savedToken && savedUser && !isLoggedOut) {
       try {
         setToken(savedToken);
         setUser(JSON.parse(savedUser));
@@ -35,8 +36,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("auth_token");
         localStorage.removeItem("auth_user");
       }
-    } else {
-      // Auto-set demo user if fresh visitor for easy testing
+    } else if (!isLoggedOut && !savedToken) {
+      // Auto-set default demo user on very first visit
       const defaultUser: User = {
         id: "usr_demo",
         email: "muskan@podcastrepurposer.ai",
@@ -58,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await apiLogin(email, pass);
       setToken(res.token);
       setUser(res.user);
+      localStorage.removeItem("user_logged_out");
       localStorage.setItem("auth_token", res.token);
       localStorage.setItem("auth_user", JSON.stringify(res.user));
       router.push("/dashboard");
@@ -71,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_user");
+    localStorage.setItem("user_logged_out", "true");
     router.push("/login");
   };
 

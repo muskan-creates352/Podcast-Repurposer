@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
@@ -13,16 +13,37 @@ import {
   Moon,
   UploadCloud,
   Command,
+  LogOut,
+  Settings,
+  Users,
 } from "lucide-react";
 
 export function Topbar() {
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const notifMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close menus on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
+      if (notifMenuRef.current && !notifMenuRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const notifications = [
     {
@@ -45,6 +66,14 @@ export function Topbar() {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
+  const handleLogout = () => {
+    setShowProfileMenu(false);
+    logout();
+    showToast("Signed out successfully. See you soon!", "info");
+  };
+
+  const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "M";
 
   return (
     <header className="h-16 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-[#0c0c0e]/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-20">
@@ -93,10 +122,13 @@ export function Topbar() {
           )}
         </button>
 
-        {/* Notifications Popover Trigger */}
-        <div className="relative">
+        {/* Notifications Popover */}
+        <div className="relative" ref={notifMenuRef}>
           <button
-            onClick={() => setShowNotifications(!showNotifications)}
+            onClick={() => {
+              setShowNotifications(!showNotifications);
+              setShowProfileMenu(false);
+            }}
             className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-850 transition-colors relative"
           >
             <Bell className="w-4 h-4" />
@@ -136,9 +168,80 @@ export function Topbar() {
           )}
         </div>
 
-        {/* User Avatar */}
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-sky-400 text-white flex items-center justify-center text-xs font-bold shadow-sm">
-          {user?.name ? user.name[0].toUpperCase() : "M"}
+        {/* Profile Avatar & Interactive Dropdown Menu */}
+        <div className="relative" ref={profileMenuRef}>
+          <button
+            type="button"
+            onClick={() => {
+              setShowProfileMenu(!showProfileMenu);
+              setShowNotifications(false);
+            }}
+            className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-sky-400 hover:ring-2 hover:ring-brand-500/50 transition-all text-white flex items-center justify-center text-xs font-bold shadow-sm cursor-pointer select-none"
+            title="Profile Menu & Sign Out"
+          >
+            {userInitial}
+          </button>
+
+          {showProfileMenu && (
+            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-700 shadow-2xl p-2 z-50 animate-slide-up text-xs">
+              {/* User Header Info */}
+              <div className="p-3 pb-3 border-b border-zinc-100 dark:border-zinc-800/80">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-600 to-sky-400 text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">
+                    {userInitial}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                      {user?.name || "Muskan Kumari"}
+                    </p>
+                    <p className="text-[11px] text-zinc-400 truncate">
+                      {user?.email || "muskan@podcastrepurposer.ai"}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-2.5 flex items-center gap-1 text-[10px] text-emerald-500 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                  <span>Active Workspace Session</span>
+                </div>
+              </div>
+
+              {/* Menu Links */}
+              <div className="py-1.5 space-y-0.5">
+                <Link
+                  href="/settings"
+                  onClick={() => setShowProfileMenu(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <Settings className="w-3.5 h-3.5 text-zinc-400" />
+                  <span>Workspace Settings</span>
+                </Link>
+
+                <Link
+                  href="/login"
+                  onClick={() => setShowProfileMenu(false)}
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3.5 h-3.5 text-brand-400" />
+                    <span>Switch User Account</span>
+                  </div>
+                  <span className="text-[10px] text-zinc-400">Login</span>
+                </Link>
+              </div>
+
+              {/* Sign Out Action */}
+              <div className="pt-1.5 border-t border-zinc-100 dark:border-zinc-800/80">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors font-medium text-left"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out / Log Out</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

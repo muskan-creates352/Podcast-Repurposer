@@ -40,11 +40,22 @@ export async function apiLogin(email: string, password: string): Promise<AuthRes
     if (password === "error") {
       throw new Error("Invalid email or password");
     }
+    let displayName = "Muskan Kumari";
+    const lowerEmail = (email || "").toLowerCase();
+    if (lowerEmail.includes("shivani")) {
+      displayName = "Shivani Patel";
+    } else if (lowerEmail.includes("hamdaan") || lowerEmail.includes("mentor")) {
+      displayName = "Hamdaan Sir";
+    } else if (email && email.includes("@")) {
+      const handle = email.split("@")[0].replace(/[._-]/g, " ");
+      displayName = handle.charAt(0).toUpperCase() + handle.slice(1);
+    }
+
     return {
       user: {
-        id: "usr_01",
-        email: email || "creator@podcastrepurposer.ai",
-        name: email ? email.split("@")[0] : "Muskan Kumari",
+        id: "usr_" + Math.random().toString(36).substring(2, 8),
+        email: email || "muskan@podcastrepurposer.ai",
+        name: displayName,
       },
       token: "mock_jwt_token_sample_abc123",
     };
