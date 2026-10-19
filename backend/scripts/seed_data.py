@@ -16,15 +16,19 @@ from app.models.content import GeneratedContent
 from app.models.audit import AuditLog
 
 
-def seed_database():
+def seed_database(reset: bool = False):
+    if reset:
+        print("Reset flag specified. Dropping and re-creating database tables...")
+        Base.metadata.drop_all(bind=engine)
     print("Initializing database tables...")
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
     try:
         # Check if already seeded
-        if db.query(Episode).count() > 0:
+        if not reset and db.query(Episode).count() > 0:
             print("Database already contains episodes. Skipping seed to prevent duplicate entries.")
+            print("Tip: Run with '--reset' or '--force' to wipe and re-seed sample data (e.g., python scripts/seed_data.py --reset).")
             return
 
         print("Seeding sample user...")
@@ -260,4 +264,5 @@ def seed_database():
 
 
 if __name__ == "__main__":
-    seed_database()
+    reset_mode = any(arg in sys.argv for arg in ("--reset", "--force", "-f", "-r"))
+    seed_database(reset=reset_mode)
