@@ -113,7 +113,7 @@ export function Topbar() {
         <button
           onClick={toggleTheme}
           title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-850 transition-colors"
+          className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         >
           {theme === "dark" ? (
             <Sun className="w-4 h-4 text-amber-400" />
@@ -129,7 +129,7 @@ export function Topbar() {
               setShowNotifications(!showNotifications);
               setShowProfileMenu(false);
             }}
-            className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-850 transition-colors relative"
+            className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative"
           >
             <Bell className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500"></span>

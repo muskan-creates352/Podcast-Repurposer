@@ -57,7 +57,7 @@ export function PipelineCard({ agents }: PipelineCardProps) {
           return (
             <div
               key={agent.id}
-              className="group p-3 rounded-xl border border-zinc-100 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-900/40 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/80 transition-all duration-150"
+              className="group p-3 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/80 transition-all duration-150"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

@@ -16,7 +16,14 @@ interface SearchMatch {
   snippet: string;
 }
 
-const POPULAR_TAGS = ["repurposing", "pipeline", "timestamps", "grounding", "multimodal", "creator"];
+const POPULAR_TAGS = [
+  "hallucination control",
+  "LangGraph agents",
+  "timestamp grounding",
+  "vector search",
+  "repurposing",
+  "monetization",
+];
 
 function SearchArchiveContent() {
   const searchParams = useSearchParams();
@@ -119,8 +126,8 @@ function SearchArchiveContent() {
 
       {/* Suggested Quick Filters */}
       <div className="flex items-center gap-2 flex-wrap text-xs text-zinc-400">
-        <span className="flex items-center gap-1 font-medium">
-          <Filter className="w-3.5 h-3.5 text-zinc-500" />
+        <span className="flex items-center gap-1.5 font-medium text-zinc-500 dark:text-zinc-400">
+          <Filter className="w-3.5 h-3.5 text-brand-500 dark:text-brand-400" />
           <span>Popular topics:</span>
         </span>
         {POPULAR_TAGS.map((tag) => (
@@ -131,9 +138,10 @@ function SearchArchiveContent() {
               setQuery(tag);
               executeSearch(tag);
             }}
-            className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-850 hover:bg-brand-500/10 hover:text-brand-400 text-zinc-600 dark:text-zinc-300 transition-colors text-[11px]"
+            className="px-3 py-1.5 rounded-xl bg-zinc-200/80 dark:bg-zinc-800/90 hover:bg-brand-500/15 hover:text-brand-400 dark:hover:bg-brand-500/20 dark:hover:text-brand-300 border border-zinc-300 dark:border-zinc-700/80 text-zinc-800 dark:text-zinc-200 font-medium transition-all text-[11px] flex items-center gap-1 shadow-sm"
           >
-            &ldquo;{tag}&rdquo;
+            <span className="text-brand-500 dark:text-brand-400 font-bold">#</span>
+            <span>{tag}</span>
           </button>
         ))}
       </div>

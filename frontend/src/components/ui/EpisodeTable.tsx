@@ -64,7 +64,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
               <th className="px-5 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-850">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {filteredEpisodes.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-5 py-8 text-center text-zinc-400">
