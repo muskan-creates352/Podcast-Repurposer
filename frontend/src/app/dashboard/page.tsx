@@ -63,7 +63,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/review"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 hover:border-brand-500 text-zinc-700 dark:text-zinc-200 text-xs font-semibold shadow-sm transition-all"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 hover:border-brand-500 hover:bg-brand-500/10 hover:text-brand-400 text-zinc-700 dark:text-zinc-200 text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <CheckSquare className="w-3.5 h-3.5 text-brand-500" />
             <span>Open Review Queue</span>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
 
           <Link
             href="/upload"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-glow transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 hover:shadow-glow text-white text-xs font-semibold shadow-glow transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <UploadCloud className="w-3.5 h-3.5" />
             <span>Upload Episode</span>
@@ -82,7 +82,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4 Stat Cards */}
+      {/* 4 Interactive Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Episodes"
@@ -91,6 +91,7 @@ export default function DashboardPage() {
           trend="+14% this month"
           icon={<Radio className="w-5 h-5" />}
           variant="default"
+          href="/episodes"
         />
         <StatCard
           title="Clips Generated"
@@ -99,6 +100,7 @@ export default function DashboardPage() {
           trend="+28% this month"
           icon={<Scissors className="w-5 h-5" />}
           variant="brand"
+          href="/review"
         />
         <StatCard
           title="Pending Reviews"
@@ -106,6 +108,7 @@ export default function DashboardPage() {
           subtitle="Awaiting creator approval"
           icon={<Clock className="w-5 h-5" />}
           variant="amber"
+          href="/review"
         />
         <StatCard
           title="Avg Processing Time"
@@ -114,6 +117,7 @@ export default function DashboardPage() {
           trend="0.8m faster"
           icon={<Zap className="w-5 h-5" />}
           variant="emerald"
+          href="/episodes"
         />
       </div>
 

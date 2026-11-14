@@ -62,8 +62,11 @@ export function Topbar() {
 
   const handleGlobalSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/search?q=${encodeURIComponent(q)}`);
+    } else {
+      router.push("/search");
     }
   };
 
@@ -78,22 +81,23 @@ export function Topbar() {
   return (
     <header className="h-16 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-[#0c0c0e]/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-20">
       {/* Global Quick Search */}
-      <form onSubmit={handleGlobalSearch} className="flex items-center gap-3 w-72 sm:w-96">
+      <form onSubmit={handleGlobalSearch} className="flex items-center gap-2 w-72 sm:w-96">
         <div className="relative w-full">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search transcripts, clips, or episodes (Press Enter)..."
-            className="w-full pl-9 pr-8 py-1.5 text-xs rounded-xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-200/60 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-all"
+            placeholder="Search transcripts, clips, or episodes..."
+            className="w-full pl-9 pr-20 py-2 text-xs rounded-xl bg-zinc-100/90 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all"
           />
           <button
             type="submit"
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-[10px] font-mono text-zinc-500 hover:text-brand-500 transition-colors"
+            title="Search transcripts & episodes"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-brand-600 hover:bg-brand-500 active:scale-95 text-white text-[11px] font-semibold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
           >
-            <Command className="w-2.5 h-2.5" />
-            <span>↵</span>
+            <Search className="w-3 h-3" />
+            <span>Search</span>
           </button>
         </div>
       </form>
