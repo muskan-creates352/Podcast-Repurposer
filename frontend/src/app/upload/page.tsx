@@ -108,13 +108,22 @@ export default function UploadPage() {
         setProgress(Math.min(currentProgress, 100));
       }, 500);
 
-      // Attempt background backend call without blocking UI
+      // Attempt background backend call and trigger pipeline
       fetch("http://localhost:8000/api/episodes", {
         method: "POST",
         body: formData,
-      }).catch(() => {
-        // Backend offline or mock mode - simulated progress smoothly completes
-      });
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((created) => {
+          if (created && created.id) {
+            fetch(`http://localhost:8000/api/episodes/${created.id}/process`, {
+              method: "POST",
+            }).catch(() => {});
+          }
+        })
+        .catch(() => {
+          // Backend offline or mock mode - simulated progress smoothly completes
+        });
     } catch {
       setIsUploading(false);
     }

@@ -112,13 +112,29 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                     {formatDate(episode.created_at)}
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <Link
-                      href={`/review?episode=${episode.id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-brand-500 hover:text-white dark:hover:bg-brand-600 text-zinc-700 dark:text-zinc-300 transition-all duration-150"
-                    >
-                      <span>Review</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
+                    <div className="flex items-center justify-end gap-2">
+                      {episode.status === "uploaded" && (
+                        <button
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            try {
+                              await fetch(`http://localhost:8000/api/episodes/${episode.id}/process`, { method: "POST" });
+                              window.location.reload();
+                            } catch {}
+                          }}
+                          className="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-brand-600 hover:bg-brand-500 text-white shadow-sm transition-all"
+                        >
+                          Process AI
+                        </button>
+                      )}
+                      <Link
+                        href={`/review?episode=${episode.id}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-brand-500 hover:text-white dark:hover:bg-brand-600 text-zinc-700 dark:text-zinc-300 transition-all duration-150"
+                      >
+                        <span>Review</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))
