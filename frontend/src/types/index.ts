@@ -47,7 +47,7 @@ export interface Stats {
 }
 
 // -------------------------------------------------------------
-// Transcript & Grounding Types (Phase 4)
+// Transcript & Grounding Types
 // -------------------------------------------------------------
 export interface TranscriptSegment {
   id: string;
@@ -66,7 +66,72 @@ export interface Transcript {
 }
 
 // -------------------------------------------------------------
-// Notifications Types (Phase 4)
+// Podcast Insights Types (Phase 2 Core Intelligence)
+// -------------------------------------------------------------
+export interface PodcastSpeaker {
+  name: string;
+  role: string;
+  key_viewpoint: string;
+}
+
+export interface PodcastOverview {
+  podcast_title: string;
+  explanation: string;
+  purpose: string;
+  central_idea: string;
+  subjects_covered: string[];
+  speakers: PodcastSpeaker[];
+}
+
+export interface TopicItem {
+  id: string;
+  name: string;
+  explanation: string;
+  timestamp: string;
+  start_seconds: number;
+  important_points: string[];
+  related_segments: string[];
+}
+
+export interface Summaries {
+  summary_30s: string;
+  summary_1m: string;
+  summary_detailed: string;
+  five_takeaways: string[];
+}
+
+export interface SmartChapter {
+  chapter_number: number;
+  title: string;
+  start_time: string;
+  end_time: string;
+  start_seconds: number;
+  end_seconds: number;
+  explanation: string;
+  key_points: string[];
+}
+
+export interface KeyTakeaway {
+  id: string;
+  lesson: string;
+  category: string;
+  practical_advice: string;
+  timestamp: string;
+}
+
+export interface PodcastInsights {
+  episode_id: string | number;
+  episode_title: string;
+  duration: string | number;
+  overview: PodcastOverview;
+  summaries: Summaries;
+  topics: TopicItem[];
+  chapters: SmartChapter[];
+  takeaways: KeyTakeaway[];
+}
+
+// -------------------------------------------------------------
+// Notifications Types
 // -------------------------------------------------------------
 export interface NotificationItem {
   id: string;
@@ -78,7 +143,7 @@ export interface NotificationItem {
 }
 
 // -------------------------------------------------------------
-// Analytics Types (Phase 4)
+// Analytics Types
 // -------------------------------------------------------------
 export interface WeeklyEpisodeData {
   week: string;

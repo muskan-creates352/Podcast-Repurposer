@@ -9,6 +9,7 @@ import {
   Radio,
   Video,
   UploadCloud,
+  Brain,
   Scissors,
   Sparkles,
   CheckSquare,
@@ -26,19 +27,35 @@ export function Sidebar() {
   const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Full 11 Navigation Items as per Master Specification
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Episodes", href: "/episodes", icon: Radio },
-    { name: "YouTube Import", href: "/youtube", icon: Video, badge: "New", badgeColor: "bg-rose-500" },
-    { name: "Upload", href: "/upload", icon: UploadCloud },
-    { name: "Clip Studio", href: "/clip-studio", icon: Scissors },
-    { name: "Content Studio", href: "/content-studio", icon: Sparkles },
-    { name: "Review Queue", href: "/review", icon: CheckSquare, badge: "12", badgeColor: "bg-brand-500" },
-    { name: "AI Chatbot", href: "/chat", icon: MessageSquare },
-    { name: "Search Archive", href: "/search", icon: Search },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
-    { name: "Settings", href: "/settings", icon: Settings },
+  // Grouped Navigation: Workspace, AI Workspace, Management
+  const navSections = [
+    {
+      title: "Workspace",
+      items: [
+        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Episodes", href: "/episodes", icon: Radio },
+        { name: "YouTube Import", href: "/youtube", icon: Video, badge: "New", badgeColor: "bg-rose-500" },
+        { name: "Upload", href: "/upload", icon: UploadCloud },
+      ],
+    },
+    {
+      title: "AI Workspace",
+      items: [
+        { name: "Podcast Insights", href: "/insights", icon: Brain, badge: "AI", badgeColor: "bg-gradient-to-r from-purple-500 to-indigo-500" },
+        { name: "Clip Studio", href: "/clip-studio", icon: Scissors },
+        { name: "Content Studio", href: "/content-studio", icon: Sparkles },
+        { name: "AI Chatbot", href: "/chat", icon: MessageSquare },
+        { name: "Search Archive", href: "/search", icon: Search },
+      ],
+    },
+    {
+      title: "Management",
+      items: [
+        { name: "Review Queue", href: "/review", icon: CheckSquare, badge: "12", badgeColor: "bg-brand-500" },
+        { name: "Analytics", href: "/analytics", icon: BarChart3 },
+        { name: "Settings", href: "/settings", icon: Settings },
+      ],
+    },
   ];
 
   const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "M";
@@ -79,55 +96,61 @@ export function Sidebar() {
           </button>
         </div>
 
-        {/* Navigation Menu (11 items) */}
-        <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
-          {!isCollapsed && (
-            <p className="px-3 py-1.5 text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-              Workspace
-            </p>
-          )}
+        {/* Navigation Sections */}
+        <nav className="p-3 space-y-3 overflow-y-auto max-h-[calc(100vh-140px)]">
+          {navSections.map((section, sIdx) => (
+            <div key={section.title} className="space-y-1">
+              {!isCollapsed ? (
+                <p className="px-3 pt-2 pb-1 text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                  {section.title}
+                </p>
+              ) : (
+                sIdx > 0 && <div className="my-2 border-t border-zinc-200 dark:border-zinc-800/60 mx-2" />
+              )}
 
-          {navigation.map((item) => {
-            const isActive =
-              pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-            const Icon = item.icon;
+              {section.items.map((item) => {
+                const isActive =
+                  pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                const Icon = item.icon;
 
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                title={isCollapsed ? item.name : undefined}
-                className={`flex items-center ${
-                  isCollapsed ? "justify-center" : "justify-between"
-                } px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 group ${
-                  isActive
-                    ? "bg-brand-500/15 text-brand-600 dark:text-brand-400 font-semibold shadow-sm"
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-200"
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon
-                    className={`w-4 h-4 shrink-0 transition-colors ${
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    title={isCollapsed ? item.name : undefined}
+                    className={`flex items-center ${
+                      isCollapsed ? "justify-center" : "justify-between"
+                    } px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 group ${
                       isActive
-                        ? "text-brand-600 dark:text-brand-400"
-                        : "text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200"
-                    }`}
-                  />
-                  {!isCollapsed && <span className="truncate">{item.name}</span>}
-                </div>
-
-                {!isCollapsed && item.badge && (
-                  <span
-                    className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold text-white shadow-sm shrink-0 ${
-                      item.badgeColor || "bg-brand-500"
+                        ? "bg-brand-500/15 text-brand-600 dark:text-brand-400 font-semibold shadow-sm"
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-200"
                     }`}
                   >
-                    {item.badge}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Icon
+                        className={`w-4 h-4 shrink-0 transition-colors ${
+                          isActive
+                            ? "text-brand-600 dark:text-brand-400"
+                            : "text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200"
+                        }`}
+                      />
+                      {!isCollapsed && <span className="truncate">{item.name}</span>}
+                    </div>
+
+                    {!isCollapsed && item.badge && (
+                      <span
+                        className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold text-white shadow-sm shrink-0 ${
+                          item.badgeColor || "bg-brand-500"
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
       </div>
 

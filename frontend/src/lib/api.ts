@@ -8,7 +8,8 @@ import {
   AuthResponse,
   Transcript,
   AnalyticsData,
-  NotificationItem
+  NotificationItem,
+  PodcastInsights
 } from "@/types";
 import { 
   MOCK_STATS, 
@@ -19,7 +20,8 @@ import {
   MOCK_AGENTS,
   MOCK_TRANSCRIPTS,
   MOCK_ANALYTICS_DATA,
-  MOCK_NOTIFICATIONS
+  MOCK_NOTIFICATIONS,
+  MOCK_PODCAST_INSIGHTS
 } from "./mockData";
 
 // ARCHITECTURE RULE: Central flag to switch between mock data and real FastAPI backend
@@ -344,6 +346,30 @@ export async function fetchNotifications(): Promise<NotificationItem[]> {
       type: ep.status === "ready_for_review" ? "ready_for_review" : "processing",
       episode_id: ep.id,
     }));
+  }
+  return res.json();
+}
+
+// -------------------------------------------------------------
+// Podcast Insights API (Phase 2 Core Intelligence)
+// -------------------------------------------------------------
+export async function fetchPodcastInsights(episodeId: string = "ep_01"): Promise<PodcastInsights> {
+  if (USE_MOCK) {
+    await new Promise((r) => setTimeout(r, 250));
+    if (MOCK_PODCAST_INSIGHTS[episodeId]) {
+      return MOCK_PODCAST_INSIGHTS[episodeId];
+    }
+    // Return ep_01 insights mapped to the requested episode
+    const fallback = { ...MOCK_PODCAST_INSIGHTS.ep_01, episode_id: episodeId };
+    return fallback;
+  }
+
+  const res = await fetch(`${BASE_URL}/episodes/${episodeId}/insights`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    // Graceful fallback to mock insights if offline
+    return { ...MOCK_PODCAST_INSIGHTS.ep_01, episode_id: episodeId };
   }
   return res.json();
 }
