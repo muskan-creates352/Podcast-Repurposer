@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
 
 from app.core.config import settings
 from app.core.database import engine, Base
@@ -14,6 +15,11 @@ from app.routers import (
     insights_router,
     clips_router,
     social_video_router,
+    notifications_router,
+    analytics_router,
+    reviews_router,
+    audit_router,
+    search_router,
 )
 from app.services.episode_service import ensure_upload_dir
 
@@ -26,6 +32,19 @@ async def lifespan(app: FastAPI):
     """
     # Create DB tables
     Base.metadata.create_all(bind=engine)
+
+    # Lightweight migration: ensure low_confidence column exists in transcripts table
+    try:
+        with engine.connect() as conn:
+            if engine.dialect.name == "sqlite":
+                res = conn.execute(text("PRAGMA table_info(transcripts)")).fetchall()
+                col_names = [row[1] for row in res]
+                if col_names and "low_confidence" not in col_names:
+                    conn.execute(text("ALTER TABLE transcripts ADD COLUMN low_confidence BOOLEAN DEFAULT 0"))
+                    conn.commit()
+    except Exception:
+        pass
+
     # Ensure uploads directory is ready
     ensure_upload_dir()
     yield
@@ -56,6 +75,23 @@ app.include_router(dashboard_router, prefix=settings.API_PREFIX)
 app.include_router(insights_router, prefix=settings.API_PREFIX)
 app.include_router(clips_router, prefix=settings.API_PREFIX)
 app.include_router(social_video_router, prefix=settings.API_PREFIX)
+app.include_router(notifications_router, prefix=settings.API_PREFIX)
+app.include_router(analytics_router, prefix=settings.API_PREFIX)
+app.include_router(reviews_router, prefix=settings.API_PREFIX)
+app.include_router(audit_router, prefix=settings.API_PREFIX)
+app.include_router(search_router, prefix=settings.API_PREFIX)
+
+# Support legacy /v1 routes seamlessly
+from app.routers.dashboard import read_stats, read_weekly, read_agents_status
+from app.routers.episodes import list_episodes, get_episode, get_episode_clips, get_episode_content
+
+app.add_api_route("/api/v1/analytics/overview", read_stats, methods=["GET"], tags=["Analytics V1 Alias"])
+app.add_api_route("/api/v1/analytics/weekly", read_weekly, methods=["GET"], tags=["Analytics V1 Alias"])
+app.add_api_route("/api/v1/agents/status", read_agents_status, methods=["GET"], tags=["Agents V1 Alias"])
+app.add_api_route("/api/v1/podcasts", list_episodes, methods=["GET"], tags=["Podcasts V1 Alias"])
+app.add_api_route("/api/v1/podcasts/{id}", get_episode, methods=["GET"], tags=["Podcasts V1 Alias"])
+app.add_api_route("/api/v1/podcasts/{id}/clips", get_episode_clips, methods=["GET"], tags=["Podcasts V1 Alias"])
+app.add_api_route("/api/v1/podcasts/{id}/content", get_episode_content, methods=["GET"], tags=["Podcasts V1 Alias"])
 
 
 @app.get("/")

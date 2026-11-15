@@ -122,6 +122,7 @@ export default function DashboardPage() {
           trend="+14% this month"
           icon={<Radio className="w-5 h-5" />}
           variant="default"
+          href="/episodes"
         />
         <StatCard
           title="Videos Imported"
@@ -138,6 +139,7 @@ export default function DashboardPage() {
           trend="+28% this month"
           icon={<Scissors className="w-5 h-5 text-purple-400" />}
           variant="brand"
+          href="/review"
         />
         <StatCard
           title="Pending Reviews"
@@ -145,6 +147,7 @@ export default function DashboardPage() {
           subtitle="Awaiting approval"
           icon={<Clock className="w-5 h-5 text-amber-400" />}
           variant="amber"
+          href="/review"
         />
         <StatCard
           title="Avg Turnaround"
@@ -159,6 +162,7 @@ export default function DashboardPage() {
           trend="0.8m faster"
           icon={<Zap className="w-5 h-5 text-emerald-400" />}
           variant="emerald"
+          href="/episodes"
         />
       </div>
 
