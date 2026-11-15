@@ -7,7 +7,14 @@ from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.database import engine, Base
 import app.models  # Ensures all model tables are registered with Base.metadata
-from app.routers import auth_router, episodes_router, dashboard_router, insights_router
+from app.routers import (
+    auth_router,
+    episodes_router,
+    dashboard_router,
+    insights_router,
+    clips_router,
+    social_video_router,
+)
 from app.services.episode_service import ensure_upload_dir
 
 
@@ -47,6 +54,8 @@ app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(episodes_router, prefix=settings.API_PREFIX)
 app.include_router(dashboard_router, prefix=settings.API_PREFIX)
 app.include_router(insights_router, prefix=settings.API_PREFIX)
+app.include_router(clips_router, prefix=settings.API_PREFIX)
+app.include_router(social_video_router, prefix=settings.API_PREFIX)
 
 
 @app.get("/")

@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { 
   Scissors, 
-  Sparkles, 
   Play, 
   Pause, 
   Check, 
@@ -12,10 +11,15 @@ import {
   TrendingUp, 
   Download, 
   Sliders, 
-  Info 
+  Square,
+  Smartphone,
+  Monitor,
+  Type,
+  Loader2,
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { formatSeconds } from "@/lib/utils";
+import { exportClipViaFFmpeg } from "@/lib/api";
 
 interface StudioClip {
   id: string;
@@ -70,9 +74,25 @@ export default function ClipStudioPage() {
   const [clips, setClips] = useState<StudioClip[]>(INITIAL_CLIPS);
   const [selectedClipId, setSelectedClipId] = useState<string>("clip_s1");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [previewTime, setPreviewTime] = useState<number>(252);
+  
+  // Aspect Ratio & Subtitle Styling States (Part 2)
+  const [aspectRatio, setAspectRatio] = useState<"9:16" | "16:9" | "1:1">("9:16");
+  const [fontSize, setFontSize] = useState<number>(24);
+  const [fontColor, setFontColor] = useState<string>("yellow");
+  const [position, setPosition] = useState<"bottom" | "center" | "top">("bottom");
+  const [editableTitle, setEditableTitle] = useState<string>("");
+  const [editableCaption, setEditableCaption] = useState<string>("");
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [exportProgress, setExportProgress] = useState<number>(0);
 
   const activeClip = clips.find((c) => c.id === selectedClipId) || clips[0];
+
+  const handleSelectClip = (clip: StudioClip) => {
+    setSelectedClipId(clip.id);
+    setEditableTitle(clip.title);
+    setEditableCaption(clip.hook);
+    setIsPlaying(false);
+  };
 
   const handleUpdateStatus = (id: string, newStatus: StudioClip["status"]) => {
     setClips((prev) =>
@@ -97,14 +117,53 @@ export default function ClipStudioPage() {
     showToast(`Updated timestamp range`, "info");
   };
 
-  const handleExportClip = () => {
-    showToast(`Exporting clip "${activeClip.title}" (MP4 9:16 Vertical format)`, "success");
+  // Real FFmpeg Video Export
+  const handleExportClip = async () => {
+    setIsExporting(true);
+    setExportProgress(15);
+    showToast(`Initiating FFmpeg rendering in ${aspectRatio} format...`, "info");
+
+    try {
+      const interval = setInterval(() => {
+        setExportProgress((p) => Math.min(90, p + 25));
+      }, 500);
+
+      const res = await exportClipViaFFmpeg({
+        clip_id: activeClip.id,
+        title: editableTitle || activeClip.title,
+        aspect_ratio: aspectRatio,
+        start_time: activeClip.startTime,
+        end_time: activeClip.endTime,
+        caption_text: editableCaption || activeClip.hook,
+        font_size: fontSize,
+        font_color: fontColor,
+        position: position,
+      });
+
+      clearInterval(interval);
+      setExportProgress(100);
+      showToast(`MP4 Render complete! Starting download...`, "success");
+
+      // Trigger actual browser download
+      const link = document.createElement("a");
+      link.href = res.download_url;
+      link.download = res.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch {
+      showToast("Export failed. Please check backend connection.", "error");
+    } finally {
+      setTimeout(() => {
+        setIsExporting(false);
+      }, 1500);
+    }
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-slide-up pb-16">
+    <div className="max-w-7xl mx-auto space-y-6 animate-slide-up pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-5">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
@@ -113,28 +172,39 @@ export default function ClipStudioPage() {
             <span>AI Viral Clip Studio</span>
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Scored high-density moments with AI opening hooks, viral rankings (0–100), and precise timestamp trimming.
+            Real FFmpeg video rendering, aspect ratio switching (9:16, 16:9, 1:1), subtitle styling, and viral moment trimming.
           </p>
         </div>
 
+        {/* Export Button */}
         <button
           type="button"
           onClick={handleExportClip}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-glow transition-all"
+          disabled={isExporting}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-glow transition-all disabled:opacity-50"
         >
-          <Download className="w-4 h-4" />
-          <span>Export Selected Clip (MP4)</span>
+          {isExporting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Rendering FFmpeg ({exportProgress}%)...</span>
+            </>
+          ) : (
+            <>
+              <Download className="w-4 h-4" />
+              <span>Export {aspectRatio} Clip (MP4)</span>
+            </>
+          )}
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Clips List & Viral Rankings (5 Cols) */}
-        <div className="lg:col-span-5 space-y-3">
+        {/* Left Column: Clips List & Viral Rankings (4 Cols) */}
+        <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between px-1">
             <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
               Detected Highlights ({clips.length})
             </span>
-            <span className="text-[11px] text-brand-400 font-mono">
+            <span className="text-[11px] text-purple-400 font-mono">
               Scored by Groq AI
             </span>
           </div>
@@ -147,58 +217,63 @@ export default function ClipStudioPage() {
               return (
                 <div
                   key={clip.id}
-                  onClick={() => {
-                    setSelectedClipId(clip.id);
-                    setPreviewTime(clip.startTime);
-                  }}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-[#121215] shadow-sm space-y-2.5 ${
+                  onClick={() => handleSelectClip(clip)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer relative ${
                     isSelected
-                      ? "border-brand-500 ring-1 ring-brand-500/30"
-                      : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"
+                      ? "bg-purple-950/20 border-purple-500/80 shadow-md ring-1 ring-purple-500/30"
+                      : "bg-white dark:bg-zinc-900/70 border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-700"
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-bold text-brand-500 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {formatSeconds(clip.startTime)} – {formatSeconds(clip.endTime)} ({durationSec}s)
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      <span>Viral Score: {clip.viralScore}/100</span>
                     </span>
 
-                    {/* Viral Score Pill */}
-                    <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 text-xs font-bold">
-                      <TrendingUp className="w-3 h-3 text-pink-400" />
-                      <span>{clip.viralScore}/100</span>
+                    <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-mono">
+                      <Clock className="w-3 h-3" />
+                      <span>{formatSeconds(clip.startTime)} - {formatSeconds(clip.endTime)}</span>
+                      <span className="text-[10px] text-zinc-500">({durationSec}s)</span>
                     </div>
                   </div>
 
-                  <h4 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 leading-snug">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white line-clamp-1 mb-1">
                     {clip.title}
-                  </h4>
+                  </h3>
 
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 italic line-clamp-2">
-                    Hook: &ldquo;{clip.hook}&rdquo;
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2 italic mb-3">
+                    &ldquo;{clip.hook}&rdquo;
                   </p>
 
-                  <div className="flex items-center justify-between pt-1 border-t border-zinc-100 dark:border-zinc-850">
-                    <span className="text-[10px] text-zinc-400 capitalize">
-                      Status: <strong className={clip.status === "approved" ? "text-emerald-500" : clip.status === "rejected" ? "text-rose-500" : "text-amber-500"}>{clip.status}</strong>
+                  <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+                    <span
+                      className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
+                        clip.status === "approved"
+                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                          : clip.status === "rejected"
+                          ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                          : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                      }`}
+                    >
+                      {clip.status}
                     </span>
 
-                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateStatus(clip.id, "rejected")}
-                        className="p-1 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
-                        title="Reject clip"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
+                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
                         onClick={() => handleUpdateStatus(clip.id, "approved")}
-                        className="p-1 rounded-lg text-zinc-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition-colors"
-                        title="Approve clip"
+                        className="p-1 rounded-lg hover:bg-emerald-500/20 text-zinc-400 hover:text-emerald-400 transition-colors"
+                        title="Approve Clip"
                       >
                         <Check className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateStatus(clip.id, "rejected")}
+                        className="p-1 rounded-lg hover:bg-rose-500/20 text-zinc-400 hover:text-rose-400 transition-colors"
+                        title="Reject Clip"
+                      >
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -208,123 +283,271 @@ export default function ClipStudioPage() {
           </div>
         </div>
 
-        {/* Right Column: Detailed Clip Editor, Audio/Video Scrubber & Grounding (7 Cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          {/* Video Preview Aspect Card */}
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4 shadow-sm">
-            <div className="relative aspect-video rounded-xl bg-zinc-950 flex flex-col items-center justify-center border border-zinc-800 overflow-hidden group">
-              {/* Animated Waveform Visualizer */}
-              <div className="flex items-center gap-1 mb-4 h-16">
-                {[40, 65, 85, 30, 95, 75, 45, 90, 60, 30, 80, 50, 70, 90, 40].map((h, i) => (
+        {/* Right Column: Video Preview & Editing Workspace (8 Cols) */}
+        <div className="lg:col-span-8 space-y-5">
+          {/* Aspect Ratio Switcher Bar (Part 2) */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1.5">
+              <Sliders className="w-3.5 h-3.5 text-purple-400" />
+              <span>Aspect Ratio:</span>
+            </span>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setAspectRatio("9:16")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  aspectRatio === "9:16"
+                    ? "bg-purple-600 text-white shadow-sm"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span>9:16 Vertical (Reels/Shorts)</span>
+              </button>
+
+              <button
+                onClick={() => setAspectRatio("16:9")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  aspectRatio === "16:9"
+                    ? "bg-purple-600 text-white shadow-sm"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <Monitor className="w-3.5 h-3.5" />
+                <span>16:9 Landscape</span>
+              </button>
+
+              <button
+                onClick={() => setAspectRatio("1:1")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  aspectRatio === "1:1"
+                    ? "bg-purple-600 text-white shadow-sm"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <Square className="w-3.5 h-3.5" />
+                <span>1:1 Square</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Video Player Box */}
+          <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden min-h-[380px]">
+            {/* Background Canvas representation */}
+            <div
+              className={`relative rounded-2xl overflow-hidden bg-gradient-to-b from-zinc-900 via-purple-950/30 to-zinc-900 border border-zinc-700/60 shadow-2xl transition-all duration-300 flex flex-col justify-between p-4 ${
+                aspectRatio === "9:16"
+                  ? "w-64 h-[420px]"
+                  : aspectRatio === "1:1"
+                  ? "w-80 h-80"
+                  : "w-full max-w-xl h-72"
+              }`}
+            >
+              {/* Top hook label */}
+              <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                <span className="px-2 py-0.5 rounded bg-black/60 border border-zinc-700">
+                  {aspectRatio}
+                </span>
+                <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">
+                  AI Viral Hook
+                </span>
+              </div>
+
+              {/* Subtitle Overlay Preview with Real-time Styling */}
+              <div
+                className={`w-full text-center transition-all px-2 ${
+                  position === "top"
+                    ? "my-2"
+                    : position === "center"
+                    ? "my-auto"
+                    : "mt-auto mb-3"
+                }`}
+              >
+                <div className="inline-block px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-purple-500/30 shadow-lg">
+                  <p
+                    style={{
+                      fontSize: `${fontSize}px`,
+                      color:
+                        fontColor === "yellow"
+                          ? "#facc15"
+                          : fontColor === "cyan"
+                          ? "#38bdf8"
+                          : fontColor === "violet"
+                          ? "#c084fc"
+                          : "#ffffff",
+                    }}
+                    className="font-extrabold tracking-wide uppercase leading-tight drop-shadow-md"
+                  >
+                    {editableCaption || activeClip.hook}
+                  </p>
+                </div>
+              </div>
+
+              {/* Waveform Visualization during Playback */}
+              <div className="flex items-center justify-center gap-1 h-8 opacity-80">
+                {[12, 28, 45, 20, 60, 35, 18, 50, 70, 40, 25, 65, 30, 15].map((val, idx) => (
                   <div
-                    key={i}
-                    className={`w-1.5 rounded-full transition-all duration-300 ${
-                      isPlaying ? "bg-brand-500 animate-pulse" : "bg-zinc-700"
-                    }`}
-                    style={{ height: `${h}%` }}
+                    key={idx}
+                    style={{
+                      height: isPlaying ? `${Math.max(6, (val * (idx % 2 === 0 ? 1.2 : 0.7)))}%` : "20%",
+                    }}
+                    className="w-1 rounded-full bg-purple-400 transition-all duration-150"
                   />
                 ))}
               </div>
+            </div>
 
-              {/* Central Play/Pause Overlay */}
-              <button
-                type="button"
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="w-12 h-12 rounded-full bg-brand-600 hover:bg-brand-500 text-white flex items-center justify-center shadow-glow transition-all"
-              >
-                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-              </button>
+            {/* Play/Pause Button on Video */}
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-glow transition-all"
+            >
+              {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              <span>{isPlaying ? "Pause Preview" : "Play Clip"}</span>
+            </button>
+          </div>
 
-              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-zinc-400 bg-zinc-900/80 px-3 py-1.5 rounded-lg backdrop-blur">
-                <span>Current: {formatSeconds(previewTime)}</span>
-                <span>Active Range: {formatSeconds(activeClip.startTime)} – {formatSeconds(activeClip.endTime)}</span>
+          {/* Subtitle & Caption Styling Controls (Part 2) */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                <Type className="w-4 h-4 text-purple-400" />
+                <span>Subtitle Style & Positioning</span>
+              </span>
+              <span className="text-[11px] text-zinc-500">Live render preview</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Font Size */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-zinc-400">Font Size</label>
+                <div className="flex items-center gap-1">
+                  {[18, 24, 30].map((sz) => (
+                    <button
+                      key={sz}
+                      onClick={() => setFontSize(sz)}
+                      className={`flex-1 py-1 rounded-lg text-xs font-semibold transition-all ${
+                        fontSize === sz
+                          ? "bg-purple-600 text-white"
+                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                      }`}
+                    >
+                      {sz === 18 ? "Small" : sz === 24 ? "Medium" : "Large"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Font Color */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-zinc-400">Subtitle Color</label>
+                <div className="flex items-center gap-1.5">
+                  {[
+                    { name: "yellow", bg: "bg-yellow-400" },
+                    { name: "white", bg: "bg-white" },
+                    { name: "cyan", bg: "bg-sky-400" },
+                    { name: "violet", bg: "bg-purple-400" },
+                  ].map((col) => (
+                    <button
+                      key={col.name}
+                      onClick={() => setFontColor(col.name)}
+                      className={`w-7 h-7 rounded-lg ${col.bg} border-2 transition-all ${
+                        fontColor === col.name ? "border-purple-600 scale-110 shadow-sm" : "border-transparent"
+                      }`}
+                      title={col.name}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Position */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-zinc-400">Position</label>
+                <div className="flex items-center gap-1">
+                  {(["bottom", "center", "top"] as const).map((pos) => (
+                    <button
+                      key={pos}
+                      onClick={() => setPosition(pos)}
+                      className={`flex-1 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
+                        position === pos
+                          ? "bg-purple-600 text-white"
+                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                      }`}
+                    >
+                      {pos}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Manual Timestamp Trim Controls */}
-            <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                  <Sliders className="w-3.5 h-3.5 text-brand-500" />
-                  Manual Boundary Trimming
-                </span>
-                <span className="text-[11px] text-zinc-400 font-mono">
-                  Clip Duration: {Math.max(0, activeClip.endTime - activeClip.startTime)}s
-                </span>
-              </div>
+            {/* Editable Caption Text */}
+            <div className="pt-2 space-y-1.5">
+              <label className="text-xs font-medium text-zinc-400">
+                Editable Subtitle Text:
+              </label>
+              <textarea
+                value={editableCaption || activeClip.hook}
+                onChange={(e) => setEditableCaption(e.target.value)}
+                rows={2}
+                className="w-full p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              />
+            </div>
+          </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <span className="text-[10px] text-zinc-400 font-medium">Start Time ({formatSeconds(activeClip.startTime)})</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustTime("startTime", -1)}
-                      className="px-2 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-[11px] font-mono hover:bg-zinc-300 dark:hover:bg-zinc-700"
-                    >
-                      -1s
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustTime("startTime", 1)}
-                      className="px-2 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-[11px] font-mono hover:bg-zinc-300 dark:hover:bg-zinc-700"
-                    >
-                      +1s
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <span className="text-[10px] text-zinc-400 font-medium">End Time ({formatSeconds(activeClip.endTime)})</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustTime("endTime", -1)}
-                      className="px-2 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-[11px] font-mono hover:bg-zinc-300 dark:hover:bg-zinc-700"
-                    >
-                      -1s
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustTime("endTime", 1)}
-                      className="px-2 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-[11px] font-mono hover:bg-zinc-300 dark:hover:bg-zinc-700"
-                    >
-                      +1s
-                    </button>
-                  </div>
-                </div>
-              </div>
+          {/* Interactive Timeline Trimming Controls */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-purple-400" />
+                <span>Fine-Tune Clip Range (-1s / +1s)</span>
+              </span>
+              <span className="text-xs font-mono text-purple-400">
+                Duration: {Math.max(0, activeClip.endTime - activeClip.startTime)}s
+              </span>
             </div>
 
-            {/* AI Editorial Reasoning & Opening Hook */}
-            <div className="space-y-3">
-              <div className="p-3.5 rounded-xl bg-brand-500/5 border border-brand-500/20 space-y-1">
-                <div className="flex items-center gap-1.5 text-brand-400 text-xs font-bold uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Curated Opening Hook</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+                <span className="text-xs text-zinc-400">Start Time:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleAdjustTime("startTime", -1)}
+                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                  >
+                    -1s
+                  </button>
+                  <span className="text-xs font-mono font-bold text-zinc-800 dark:text-zinc-200">
+                    {formatSeconds(activeClip.startTime)}
+                  </span>
+                  <button
+                    onClick={() => handleAdjustTime("startTime", 1)}
+                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                  >
+                    +1s
+                  </button>
                 </div>
-                <p className="text-xs text-zinc-800 dark:text-zinc-200 font-medium leading-relaxed">
-                  &ldquo;{activeClip.hook}&rdquo;
-                </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800 space-y-1">
-                <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs font-bold uppercase tracking-wider">
-                  <Info className="w-3.5 h-3.5" />
-                  <span>Why this was picked (AI Reasoning)</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+                <span className="text-xs text-zinc-400">End Time:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleAdjustTime("endTime", -1)}
+                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                  >
+                    -1s
+                  </button>
+                  <span className="text-xs font-mono font-bold text-zinc-800 dark:text-zinc-200">
+                    {formatSeconds(activeClip.endTime)}
+                  </span>
+                  <button
+                    onClick={() => handleAdjustTime("endTime", 1)}
+                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                  >
+                    +1s
+                  </button>
                 </div>
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                  {activeClip.reason}
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800 space-y-1">
-                <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-                  Exact Audio Dialogue (Ground Truth Quote)
-                </span>
-                <p className="text-xs italic text-zinc-800 dark:text-zinc-200 leading-relaxed">
-                  &ldquo;{activeClip.quote}&rdquo;
-                </p>
               </div>
             </div>
           </div>

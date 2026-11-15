@@ -26,6 +26,9 @@ export interface Clip {
   text: string;
   reason: string;
   status: ClipStatus;
+  title?: string;
+  quote?: string;
+  viral_score?: number;
 }
 
 export type ContentType = 'blog' | 'social' | 'show_notes';
@@ -41,9 +44,11 @@ export interface GeneratedContent {
 
 export interface Stats {
   total_episodes: number;
+  videos_imported?: number;
   clips_generated: number;
   pending_reviews: number;
-  avg_processing_time: string;
+  avg_processing_time: string | number;
+  recent_activities?: ActivityItem[];
 }
 
 // -------------------------------------------------------------
@@ -205,4 +210,79 @@ export interface User {
 export interface AuthResponse {
   user: User;
   token: string;
+}
+
+
+// -------------------------------------------------------------
+// Social Video & Clip Export Types (Upgrade)
+// -------------------------------------------------------------
+export interface SpokenQuote {
+  quote: string;
+  speaker: string;
+  timestamp: string;
+  context: string;
+}
+
+export interface EducationalTerm {
+  term: string;
+  simple_explanation: string;
+  example: string;
+}
+
+export interface VisualFrameInsight {
+  timestamp: string;
+  scene_type: string;
+  detected_elements: string[];
+  on_screen_text: string;
+}
+
+export interface SocialVideoAnalysis {
+  video_id: string;
+  title: string;
+  platform: string;
+  duration: string;
+  thumbnail_url: string;
+  explanation_3_5_sentences: string;
+  main_message: string;
+  main_topics: string[];
+  summary_30s: string;
+  summary_detailed: string;
+  summary_beginner: string;
+  discussion_points: string[];
+  key_takeaways: string[];
+  spoken_quotes: SpokenQuote[];
+  educational_terms: EducationalTerm[];
+  visual_insights: VisualFrameInsight[];
+  repurposed_content: Record<string, string>;
+}
+
+export interface ClipExportRequest {
+  clip_id: string;
+  title: string;
+  aspect_ratio: "9:16" | "16:9" | "1:1";
+  start_time: number;
+  end_time: number;
+  caption_text?: string;
+  font_size: number;
+  font_color: string;
+  position: "bottom" | "center" | "top";
+}
+
+export interface ClipExportResponse {
+  status: string;
+  clip_id: string;
+  download_url: string;
+  filename: string;
+  aspect_ratio: string;
+  duration: number;
+  message: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  action: string;
+  target: string;
+  time: string;
+  status: string;
+  type: 'podcast' | 'clip' | 'content' | 'video';
 }

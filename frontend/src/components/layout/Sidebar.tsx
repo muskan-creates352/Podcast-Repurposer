@@ -10,12 +10,14 @@ import {
   Video,
   UploadCloud,
   Brain,
+  Film,
   Scissors,
   Sparkles,
   CheckSquare,
   MessageSquare,
   Search,
   BarChart3,
+  Download,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -27,7 +29,8 @@ export function Sidebar() {
   const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Grouped Navigation: Workspace, AI Workspace, Management
+  // Grouped Navigation matching Part 10 Specifications:
+  // WORKSPACE, AI WORKSPACE, MANAGEMENT
   const navSections = [
     {
       title: "Workspace",
@@ -35,13 +38,14 @@ export function Sidebar() {
         { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
         { name: "Episodes", href: "/episodes", icon: Radio },
         { name: "YouTube Import", href: "/youtube", icon: Video, badge: "New", badgeColor: "bg-rose-500" },
-        { name: "Upload", href: "/upload", icon: UploadCloud },
+        { name: "Upload Studio", href: "/upload", icon: UploadCloud },
       ],
     },
     {
       title: "AI Workspace",
       items: [
-        { name: "Podcast Insights", href: "/insights", icon: Brain, badge: "AI", badgeColor: "bg-gradient-to-r from-purple-500 to-indigo-500" },
+        { name: "Podcast Insights", href: "/insights", icon: Brain, badge: "AI", badgeColor: "bg-purple-600" },
+        { name: "Social Video Analyzer", href: "/social-video", icon: Film, badge: "Hot", badgeColor: "bg-pink-600" },
         { name: "Clip Studio", href: "/clip-studio", icon: Scissors },
         { name: "Content Studio", href: "/content-studio", icon: Sparkles },
         { name: "AI Chatbot", href: "/chat", icon: MessageSquare },
@@ -53,6 +57,7 @@ export function Sidebar() {
       items: [
         { name: "Review Queue", href: "/review", icon: CheckSquare, badge: "12", badgeColor: "bg-brand-500" },
         { name: "Analytics", href: "/analytics", icon: BarChart3 },
+        { name: "Export Center", href: "/export-center", icon: Download },
         { name: "Settings", href: "/settings", icon: Settings },
       ],
     },
