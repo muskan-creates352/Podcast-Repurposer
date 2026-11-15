@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Episode } from "@/types";
 import { StatusBadge } from "./StatusBadge";
 import { formatDate } from "@/lib/utils";
-import { Play, ArrowRight, Search } from "lucide-react";
+import { Play, ArrowRight, Search, X } from "lucide-react";
 
 interface EpisodeTableProps {
   episodes: Episode[];
@@ -13,6 +14,7 @@ interface EpisodeTableProps {
 }
 
 export function EpisodeTable({ episodes }: EpisodeTableProps) {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredEpisodes = episodes.filter((ep) =>
@@ -20,7 +22,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
   );
 
   return (
-    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl overflow-hidden shadow-sm hover:border-zinc-700/80 transition-all duration-200">
       <div className="p-5 border-b border-zinc-100 dark:border-zinc-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -39,15 +41,24 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
               placeholder="Search episodes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-3 py-1.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="pl-9 pr-8 py-1.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all"
             />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
           <Link
             href="/episodes"
-            className="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-500 flex items-center gap-1 transition-colors px-2 py-1.5"
+            className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-500 dark:hover:text-brand-300 flex items-center gap-1 transition-all px-2.5 py-1.5 rounded-lg hover:bg-brand-500/10"
           >
             <span>View all</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </div>
@@ -64,18 +75,29 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
               <th className="px-5 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-850">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {filteredEpisodes.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-5 py-8 text-center text-zinc-400">
-                  No episodes found matching your search.
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <p>No episodes found matching &ldquo;{searchTerm}&rdquo;.</p>
+                    {searchTerm && (
+                      <button
+                        onClick={() => setSearchTerm("")}
+                        className="text-xs text-brand-500 hover:underline font-medium"
+                      >
+                        Clear search filter
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ) : (
               filteredEpisodes.map((episode) => (
                 <tr
                   key={episode.id}
-                  className="hover:bg-zinc-50/80 dark:hover:bg-zinc-900/40 transition-colors duration-150 group"
+                  onClick={() => router.push(`/review?episode=${episode.id}`)}
+                  className="hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 transition-colors duration-150 group cursor-pointer"
                 >
                   <td className="px-5 py-3.5 font-medium text-zinc-900 dark:text-zinc-200 max-w-xs truncate">
                     <Link
@@ -84,7 +106,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                       title="Open Episode Studio"
                     >
                       <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 group-hover:text-brand-500 group-hover:bg-brand-500/10 transition-colors">
-                        <Play className="w-3 h-3" />
+                        <Play className="w-3 h-3 fill-current" />
                       </div>
                       <span className="truncate">{episode.title}</span>
                     </Link>
@@ -115,7 +137,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                   <td className="px-5 py-3.5 text-zinc-500 dark:text-zinc-400">
                     {formatDate(episode.created_at)}
                   </td>
-                  <td className="px-5 py-3.5 text-right">
+                  <td className="px-5 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1.5">
                       <Link
                         href={`/episodes/${episode.id}`}
@@ -123,6 +145,13 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                       >
                         <span>Studio</span>
                         <ArrowRight className="w-3 h-3" />
+                      </Link>
+
+                      <Link
+                        href={`/review?episode=${episode.id}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 dark:hover:text-white text-zinc-700 dark:text-zinc-300 transition-all duration-150 shadow-sm"
+                      >
+                        <span>Review</span>
                       </Link>
                     </div>
                   </td>

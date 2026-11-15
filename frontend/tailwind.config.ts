@@ -11,6 +11,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        zinc: {
+          850: "#1e1e24",
+        },
         brand: {
           50: "#f5f3ff",
           100: "#ede9fe",

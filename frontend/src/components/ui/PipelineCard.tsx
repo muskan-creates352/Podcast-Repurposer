@@ -1,6 +1,7 @@
 import React from "react";
+import Link from "next/link";
 import { AgentStatus } from "@/types";
-import { Mic, Scissors, FileText, Activity, Zap, ShieldCheck } from "lucide-react";
+import { Mic, Scissors, FileText, Activity, Zap, ShieldCheck, ChevronRight } from "lucide-react";
 
 interface PipelineCardProps {
   agents: AgentStatus[];
@@ -23,7 +24,7 @@ export function PipelineCard({ agents }: PipelineCardProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-zinc-700/80 transition-all duration-200">
       <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/60">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-brand-500/10 text-brand-500">
@@ -55,18 +56,19 @@ export function PipelineCard({ agents }: PipelineCardProps) {
           const isCompleted = agent.status === "completed";
 
           return (
-            <div
+            <Link
               key={agent.id}
-              className="group p-3 rounded-xl border border-zinc-100 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-900/40 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/80 transition-all duration-150"
+              href="/review"
+              className="group block p-3 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 hover:border-brand-500/60 dark:hover:border-brand-500/60 hover:translate-x-1 hover:shadow-sm transition-all duration-200 cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-700/60 shadow-subtle">
+                  <div className="p-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-700/60 shadow-subtle group-hover:scale-110 group-hover:border-brand-500/40 transition-transform">
                     {getAgentIcon(agent.id)}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-zinc-900 dark:text-zinc-200">
+                      <span className="text-sm font-medium text-zinc-900 dark:text-zinc-200 group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors">
                         {agent.name}
                       </span>
                       {isRunning && (
@@ -86,16 +88,19 @@ export function PipelineCard({ agents }: PipelineCardProps) {
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-[11px] font-mono font-medium text-zinc-400 dark:text-zinc-500 block">
-                    {agent.latency}
-                  </span>
-                  <span className="text-[11px] text-zinc-400 dark:text-zinc-500">
-                    {agent.lastActive}
-                  </span>
+                <div className="flex items-center gap-2">
+                  <div className="text-right">
+                    <span className="text-[11px] font-mono font-medium text-zinc-400 dark:text-zinc-500 block">
+                      {agent.latency}
+                    </span>
+                    <span className="text-[11px] text-zinc-400 dark:text-zinc-500">
+                      {agent.lastActive}
+                    </span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-brand-500 shrink-0" />
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

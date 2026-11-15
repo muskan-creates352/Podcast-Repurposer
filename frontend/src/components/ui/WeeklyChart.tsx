@@ -19,7 +19,7 @@ interface WeeklyChartProps {
 
 export function WeeklyChart({ data }: WeeklyChartProps) {
   return (
-    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-zinc-700/80 transition-all duration-200">
       <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/60">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500">
@@ -62,19 +62,19 @@ export function WeeklyChart({ data }: WeeklyChartProps) {
               tick={{ fill: "#71717a", fontSize: 12 }}
             />
             <Tooltip
-              cursor={{ fill: "rgba(124, 58, 237, 0.05)" }}
+              cursor={{ fill: "rgba(139, 92, 246, 0.12)", radius: 6 }}
               contentStyle={{
                 backgroundColor: "#18181b",
-                borderColor: "#27272a",
+                borderColor: "#3f3f46",
                 borderRadius: "0.75rem",
                 color: "#ffffff",
                 fontSize: "12px",
-                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)",
+                boxShadow: "0 10px 25px -3px rgba(0, 0, 0, 0.5)",
               }}
-              itemStyle={{ padding: 0 }}
+              itemStyle={{ padding: "2px 0", color: "#e4e4e7" }}
             />
-            <Bar dataKey="clips" fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={28} />
-            <Bar dataKey="episodes" fill="#38bdf8" radius={[4, 4, 0, 0]} maxBarSize={28} />
+            <Bar dataKey="clips" name="Clips Generated" fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={28} cursor="pointer" />
+            <Bar dataKey="episodes" name="Episodes" fill="#38bdf8" radius={[4, 4, 0, 0]} maxBarSize={28} cursor="pointer" />
           </BarChart>
         </ResponsiveContainer>
       </div>
