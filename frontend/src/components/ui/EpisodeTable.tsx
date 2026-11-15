@@ -78,12 +78,16 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                   className="hover:bg-zinc-50/80 dark:hover:bg-zinc-900/40 transition-colors duration-150 group"
                 >
                   <td className="px-5 py-3.5 font-medium text-zinc-900 dark:text-zinc-200 max-w-xs truncate">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 group-hover:text-brand-500 transition-colors">
+                    <Link
+                      href={`/episodes/${episode.id}`}
+                      className="flex items-center gap-2.5 group-hover:text-brand-500 transition-colors"
+                      title="Open Episode Studio"
+                    >
+                      <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 group-hover:text-brand-500 group-hover:bg-brand-500/10 transition-colors">
                         <Play className="w-3 h-3" />
                       </div>
                       <span className="truncate">{episode.title}</span>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-5 py-3.5">
                     <StatusBadge status={episode.status} size="sm" />
@@ -112,13 +116,15 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                     {formatDate(episode.created_at)}
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <Link
-                      href={`/review?episode=${episode.id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-brand-500 hover:text-white dark:hover:bg-brand-600 text-zinc-700 dark:text-zinc-300 transition-all duration-150"
-                    >
-                      <span>Review</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Link
+                        href={`/episodes/${episode.id}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-brand-500/10 hover:bg-brand-500 hover:text-white text-brand-600 dark:text-brand-400 transition-all duration-150"
+                      >
+                        <span>Studio</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))

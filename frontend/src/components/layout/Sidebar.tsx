@@ -9,6 +9,7 @@ import {
   Radio,
   UploadCloud,
   CheckSquare,
+  BarChart3,
   Search,
   Settings,
   Sparkles,
@@ -24,6 +25,7 @@ export function Sidebar() {
     { name: "Episodes", href: "/episodes", icon: Radio },
     { name: "Upload", href: "/upload", icon: UploadCloud },
     { name: "Review Queue", href: "/review", icon: CheckSquare, badge: "12" },
+    { name: "Analytics", href: "/analytics", icon: BarChart3 },
     { name: "Search Archive", href: "/search", icon: Search },
     { name: "Settings", href: "/settings", icon: Settings },
   ];
