@@ -41,7 +41,10 @@ class Settings(BaseSettings):
     # File storage for podcast audio/video files
     UPLOAD_DIR: str = "uploads"
 
-    # Gemini GenAI API Key (Phase 2)
+    # Groq Cloud API Key (Primary AI Provider for Whisper & LLaMA 3.3)
+    GROQ_API_KEY: str = ""
+
+    # Gemini GenAI API Key (Secondary/Fallback)
     GEMINI_API_KEY: str = ""
 
     model_config = SettingsConfigDict(

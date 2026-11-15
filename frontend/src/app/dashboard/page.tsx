@@ -19,7 +19,9 @@ import {
   Clock,
   Zap,
   UploadCloud,
-  CheckSquare,
+  Sparkles,
+  ArrowRight,
+  Video,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -44,46 +46,54 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="space-y-8 animate-slide-up">
-      {/* Welcome Banner / Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
-            <span>Creator Dashboard</span>
-            <span className="p-1 rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold">
-              v1.0 MVP
-            </span>
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-            Monitor episode ingestion, transcription, highlight extraction, and content reviews.
-          </p>
-        </div>
+    <div className="space-y-8 animate-slide-up pb-12">
+      {/* Premium Hero Welcome Banner */}
+      <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-violet-950/40 via-[#121215] to-[#121215] border border-violet-500/20 shadow-xl">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>One Podcast. Endless Content.</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              AI Podcast & Video Repurposer
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+              Transform hours of audio and YouTube recordings into viral clips, SEO articles, social threads, and timestamp-grounded takeaways in seconds.
+            </p>
+          </div>
 
-        {/* Quick Action Buttons */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/review"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 hover:border-brand-500 text-zinc-700 dark:text-zinc-200 text-xs font-semibold shadow-sm transition-all"
-          >
-            <CheckSquare className="w-3.5 h-3.5 text-brand-500" />
-            <span>Open Review Queue</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-brand-500 text-white text-[10px] font-bold">
-              {stats?.pending_reviews ?? 12}
-            </span>
-          </Link>
+          {/* Quick Action CTA Buttons */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/youtube"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-glow transition-all"
+            >
+              <Video className="w-4 h-4 text-rose-300" />
+              <span>Import YouTube</span>
+            </Link>
 
-          <Link
-            href="/upload"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-glow transition-all"
-          >
-            <UploadCloud className="w-3.5 h-3.5" />
-            <span>Upload Episode</span>
-          </Link>
+            <Link
+              href="/upload"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-glow transition-all"
+            >
+              <UploadCloud className="w-4 h-4" />
+              <span>Upload Media</span>
+            </Link>
+
+            <Link
+              href="/clip-studio"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700/80 shadow-sm transition-all"
+            >
+              <Scissors className="w-4 h-4 text-brand-400" />
+              <span>Clip Studio</span>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* 4 Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 5 KPI Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           title="Total Episodes"
           value={isStatsLoading ? "..." : stats?.total_episodes ?? 28}
@@ -91,6 +101,14 @@ export default function DashboardPage() {
           trend="+14% this month"
           icon={<Radio className="w-5 h-5" />}
           variant="default"
+        />
+        <StatCard
+          title="Videos Imported"
+          value={18}
+          subtitle="From YouTube podcasts"
+          trend="+8 this week"
+          icon={<Video className="w-5 h-5" />}
+          variant="brand"
         />
         <StatCard
           title="Clips Generated"
@@ -103,14 +121,14 @@ export default function DashboardPage() {
         <StatCard
           title="Pending Reviews"
           value={isStatsLoading ? "..." : stats?.pending_reviews ?? 12}
-          subtitle="Awaiting creator approval"
+          subtitle="Awaiting creator review"
           icon={<Clock className="w-5 h-5" />}
           variant="amber"
         />
         <StatCard
-          title="Avg Processing Time"
+          title="Avg Turnaround"
           value={isStatsLoading ? "..." : stats?.avg_processing_time ?? "4.2 min"}
-          subtitle="End-to-end ASR + Multi-Agent"
+          subtitle="End-to-end ASR + AI"
           trend="0.8m faster"
           icon={<Zap className="w-5 h-5" />}
           variant="emerald"
@@ -128,7 +146,24 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Episodes Table */}
-      <div>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              Recent Repurposed Episodes
+            </h3>
+            <p className="text-xs text-zinc-500">
+              Monitor audio transcription state, clips extraction, and direct studio access
+            </p>
+          </div>
+          <Link
+            href="/episodes"
+            className="text-xs text-brand-500 hover:underline flex items-center gap-1 font-medium"
+          >
+            <span>View All Library</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
         <EpisodeTable episodes={episodes} />
       </div>
     </div>
