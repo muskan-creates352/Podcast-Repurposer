@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Download, 
   Film, 
@@ -10,6 +10,7 @@ import {
   Check 
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { fetchExportedClips } from "@/lib/api";
 
 interface ExportFile {
   id: string;
@@ -65,8 +66,36 @@ const INITIAL_EXPORTS: ExportFile[] = [
 
 export default function ExportCenterPage() {
   const { showToast } = useToast();
-  const [exports] = useState<ExportFile[]>(INITIAL_EXPORTS);
+  const [exports, setExports] = useState<ExportFile[]>(INITIAL_EXPORTS);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchExportedClips().then((liveClips) => {
+      if (liveClips && liveClips.length > 0) {
+        const liveFormatted: ExportFile[] = liveClips.map((c, i) => ({
+          id: `live_${i}_${c.filename}`,
+          name: c.filename,
+          format: c.filename.includes("9x16")
+            ? "MP4 Video (9:16)"
+            : c.filename.includes("16x9")
+            ? "MP4 Video (16:9)"
+            : "MP4 Video (9:16)",
+          size: `${(c.size_bytes / (1024 * 1024)).toFixed(1)} MB`,
+          date: "Just rendered",
+          duration: "30s",
+          downloadUrl: c.download_url,
+          status: "ready",
+        }));
+        // Prepend live rendered files
+        setExports((prev) => {
+          const nonDupes = prev.filter(
+            (p) => !liveFormatted.some((l) => l.name === p.name)
+          );
+          return [...liveFormatted, ...nonDupes];
+        });
+      }
+    });
+  }, []);
 
   const handleDownload = (file: ExportFile) => {
     if (file.downloadUrl === "#") {

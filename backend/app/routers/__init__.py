@@ -9,6 +9,8 @@ from app.routers.analytics import router as analytics_router
 from app.routers.reviews import router as reviews_router
 from app.routers.audit import router as audit_router
 from app.routers.search import router as search_router
+from app.routers.youtube import router as youtube_router
+from app.routers.groq import router as groq_router
 
 __all__ = [
     "auth_router",
@@ -22,4 +24,6 @@ __all__ = [
     "reviews_router",
     "audit_router",
     "search_router",
+    "youtube_router",
+    "groq_router",
 ]

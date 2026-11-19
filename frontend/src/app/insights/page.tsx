@@ -30,6 +30,7 @@ export default function PodcastInsightsPage() {
   const { showToast } = useToast();
 
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string>("ep_01");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
   const [activeSummaryTab, setActiveSummaryTab] = useState<"30s" | "1m" | "detailed">("30s");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [topicSearch, setTopicSearch] = useState<string>("");
@@ -40,15 +41,15 @@ export default function PodcastInsightsPage() {
     queryFn: fetchEpisodes,
   });
 
-  // Fetch insights for the selected episode
+  // Fetch insights for the selected episode and language
   const {
     data: insights,
     isLoading,
     isRefetching,
     refetch,
   } = useQuery({
-    queryKey: ["podcastInsights", selectedEpisodeId],
-    queryFn: () => fetchPodcastInsights(selectedEpisodeId),
+    queryKey: ["podcastInsights", selectedEpisodeId, selectedLanguage],
+    queryFn: () => fetchPodcastInsights(selectedEpisodeId, selectedLanguage),
   });
 
   const handleCopy = (text: string, key: string) => {
@@ -152,6 +153,20 @@ export default function PodcastInsightsPage() {
                   Episode 1: Autonomous Multi-Agent Workflows
                 </option>
               )}
+            </select>
+          </div>
+
+          {/* Multi-Lingual Intelligence Selector */}
+          <div className="flex items-center gap-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-2.5 py-1.5 shadow-sm">
+            <span className="text-[11px] font-semibold text-purple-600 dark:text-purple-400">🌐 Lang:</span>
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="bg-transparent text-xs font-semibold text-zinc-800 dark:text-zinc-200 focus:outline-none cursor-pointer"
+            >
+              <option value="en" className="bg-white dark:bg-zinc-900">English</option>
+              <option value="hi" className="bg-white dark:bg-zinc-900">Hindi (हिंदी)</option>
+              <option value="hinglish" className="bg-white dark:bg-zinc-900">Hinglish</option>
             </select>
           </div>
 

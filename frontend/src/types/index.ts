@@ -60,6 +60,7 @@ export interface TranscriptSegment {
   end: number;   // timestamp in seconds, e.g. 24.5
   speaker: string;
   text: string;
+  confidence?: number;
   low_confidence?: boolean;
 }
 

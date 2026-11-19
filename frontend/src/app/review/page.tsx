@@ -76,7 +76,7 @@ function ReviewStudioContent() {
     router.push(`/review?episode=${id}`);
   };
 
-  const handleApproveClip = async (id: string, _text?: string) => {
+  const handleApproveClip = async (id: string) => {
     try {
       await updateClipStatus(id, "approved");
       showToast("Clip approved for publishing!", "success");
@@ -515,7 +515,7 @@ function ReviewStudioContent() {
           </div>
 
           <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-            {(transcript?.segments || []).map((seg: any, idx: number) => (
+            {(transcript?.segments || []).map((seg, idx: number) => (
               <div
                 key={idx}
                 className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800/80 space-y-1"

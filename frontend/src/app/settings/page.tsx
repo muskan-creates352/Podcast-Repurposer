@@ -59,10 +59,21 @@ export default function SettingsPage() {
   const [weeklyDigest, setWeeklyDigest] = useState(false);
 
   // AI Configuration Settings
+  const [groqKey, setGroqKey] = useState("");
+  const [showGroqKey, setShowGroqKey] = useState(false);
+  const [groqStatus, setGroqStatus] = useState<{
+    configured: boolean;
+    connected: boolean;
+    message: string;
+    text_model?: string;
+    whisper_model?: string;
+  } | null>(null);
+  const [isSavingGroq, setIsSavingGroq] = useState(false);
+
   const [geminiKey, setGeminiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
-  const [model, setModel] = useState("gemini-2.0-flash");
-  const [temperature, setTemperature] = useState(0.4);
+  const [model, setModel] = useState("llama-3.3-70b-versatile");
+  const [temperature, setTemperature] = useState(0.2);
   const [enforceGrounding, setEnforceGrounding] = useState(true);
   const [safetyFilter, setSafetyFilter] = useState(true);
   const [backendStatus, setBackendStatus] = useState<"checking" | "online" | "offline">("checking");
@@ -95,8 +106,45 @@ export default function SettingsPage() {
     }
   };
 
+  const checkGroqStatus = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/groq/status");
+      if (res.ok) {
+        const data = await res.json();
+        setGroqStatus(data);
+      }
+    } catch {}
+  };
+
+  const handleSaveGroqKey = async () => {
+    if (!groqKey.trim()) {
+      showToast("Please enter a Groq Cloud API key", "error");
+      return;
+    }
+    setIsSavingGroq(true);
+    try {
+      const res = await fetch("http://localhost:8000/api/groq/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ api_key: groqKey.trim() }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setGroqStatus(data);
+        showToast("Groq API Key saved! LLaMA 3.3 & Whisper Turbo are now active.", "success");
+      } else {
+        showToast("Failed to verify Groq API key", "error");
+      }
+    } catch {
+      showToast("Backend connection error", "error");
+    } finally {
+      setIsSavingGroq(false);
+    }
+  };
+
   useEffect(() => {
     checkBackend();
+    checkGroqStatus();
   }, []);
 
   const handleSave = (e: React.FormEvent) => {
@@ -449,6 +497,123 @@ export default function SettingsPage() {
           {/* TAB 3: AI CONFIGURATION */}
           {activeTab === "ai" && (
             <div className="space-y-6 animate-slide-up">
+              {/* GROQ CLOUD PRIMARY AI PROVIDER CARD */}
+              <div className="bg-white dark:bg-[#121215] border border-purple-500/30 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-purple-500/50 transition-colors">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100 dark:border-zinc-800">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                        <span>Groq Cloud AI (Primary Engine)</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300">
+                          Active Provider
+                        </span>
+                      </h2>
+                      <p className="text-[11px] text-zinc-400">
+                        Powers Whisper Large v3 Turbo (Speech ASR) & LLaMA 3.3 70B (Summaries, RAG Chat, Repurposing)
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {groqStatus?.connected ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[11px] font-semibold border border-emerald-500/20">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Groq Cloud Connected</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[11px] font-semibold border border-amber-500/20">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        <span>{groqStatus?.configured ? "Verifying..." : "Key Needed"}</span>
+                      </span>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={checkGroqStatus}
+                      className="p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs hover:border-purple-500 transition-colors"
+                      title="Re-check Groq status"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 flex items-center justify-between">
+                      <span>GROQ_API_KEY (from Groq Console)</span>
+                      <a
+                        href="https://console.groq.com/keys"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[10px] text-purple-400 hover:underline flex items-center gap-0.5"
+                      >
+                        <span>Get Free Key</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type={showGroqKey ? "text" : "password"}
+                          value={groqKey}
+                          onChange={(e) => setGroqKey(e.target.value)}
+                          placeholder="gsk_... (paste your Groq Cloud API key)"
+                          className="w-full px-3 py-2 pr-16 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-purple-500 font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowGroqKey(!showGroqKey)}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-purple-400 font-semibold hover:underline"
+                        >
+                          {showGroqKey ? "Hide" : "Show"}
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleSaveGroqKey}
+                        disabled={isSavingGroq || !groqKey.trim()}
+                        className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-semibold shadow-sm transition-all shrink-0 flex items-center gap-1.5"
+                      >
+                        {isSavingGroq ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            <span>Verifying...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-3.5 h-3.5" />
+                            <span>Save Key</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {groqStatus?.message && (
+                    <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900/60 text-[11px] text-zinc-400 font-mono border border-zinc-200/60 dark:border-zinc-800">
+                      {groqStatus.message}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
+                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800">
+                      <span className="text-[10px] text-zinc-400 uppercase font-semibold block">Primary Text Model</span>
+                      <span className="font-mono font-bold text-purple-400">llama-3.3-70b-versatile</span>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">Ultra-fast summaries, chapter segmentation, and RAG chat</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800">
+                      <span className="text-[10px] text-zinc-400 uppercase font-semibold block">Primary Audio Model</span>
+                      <span className="font-mono font-bold text-sky-400">whisper-large-v3-turbo</span>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">High-accuracy multilingual speech transcription</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Backend & API Connectivity */}
               <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">

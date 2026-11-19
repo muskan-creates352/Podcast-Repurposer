@@ -11,8 +11,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        saas: {
+          bg: "#0B1020",
+          sidebar: "#111827",
+          card: "#171D2E",
+          purple: "#7C3AED",
+          blue: "#3B82F6",
+          teal: "#14B8A6",
+          pink: "#F472B6",
+          text: "#F8FAFC",
+        },
         zinc: {
           850: "#1e1e24",
+          900: "#171D2E",
+          950: "#0B1020",
         },
         brand: {
           50: "#f5f3ff",
@@ -29,13 +41,15 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
       },
       boxShadow: {
         subtle: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        card: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
-        cardHover: "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04)",
-        glow: "0 0 15px -2px rgba(124, 58, 237, 0.3)",
+        card: "0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)",
+        cardHover: "0 10px 25px -3px rgba(124, 58, 237, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.2)",
+        glow: "0 0 20px -2px rgba(124, 58, 237, 0.4)",
+        glowBlue: "0 0 20px -2px rgba(59, 130, 246, 0.4)",
+        glowTeal: "0 0 20px -2px rgba(20, 184, 166, 0.4)",
       },
       keyframes: {
         pulseSubtle: {
@@ -50,5 +64,4 @@ const config: Config = {
   },
   plugins: [],
 };
-
 export default config;

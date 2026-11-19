@@ -27,8 +27,8 @@ import {
   MOCK_PODCAST_INSIGHTS
 } from "./mockData";
 
-// ARCHITECTURE RULE: Central flag to switch between mock data and real FastAPI backend
-export const USE_MOCK = true;
+// ARCHITECTURE RULE: Prefer live FastAPI backend; gracefully fall back to mock data if offline
+export const USE_MOCK = false;
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
@@ -356,18 +356,21 @@ export async function fetchNotifications(): Promise<NotificationItem[]> {
 // -------------------------------------------------------------
 // Podcast Insights API (Phase 2 Core Intelligence)
 // -------------------------------------------------------------
-export async function fetchPodcastInsights(episodeId: string = "ep_01"): Promise<PodcastInsights> {
+export async function fetchPodcastInsights(
+  episodeId: string = "ep_01",
+  language: string = "en"
+): Promise<PodcastInsights> {
   if (USE_MOCK) {
     await new Promise((r) => setTimeout(r, 250));
     if (MOCK_PODCAST_INSIGHTS[episodeId]) {
       return MOCK_PODCAST_INSIGHTS[episodeId];
     }
-    // Return ep_01 insights mapped to the requested episode
     const fallback = { ...MOCK_PODCAST_INSIGHTS.ep_01, episode_id: episodeId };
     return fallback;
   }
 
-  const res = await fetch(`${BASE_URL}/episodes/${episodeId}/insights`, {
+  const cleanEpId = episodeId.replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanEpId}/insights?language=${encodeURIComponent(language)}`, {
     headers: { ...getAuthHeader() },
   });
   if (!res.ok) {
@@ -439,4 +442,44 @@ export async function chatSocialVideo(
     throw new Error("Failed to chat with video");
   }
   return res.json();
+}
+
+export async function uploadSocialVideoFile(
+  file: File,
+  title?: string
+): Promise<SocialVideoAnalysis> {
+  const formData = new FormData();
+  formData.append("file", file);
+  if (title) formData.append("title", title);
+
+  const res = await fetch(`${BASE_URL}/social-video/upload`, {
+    method: "POST",
+    headers: { ...getAuthHeader() },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to upload and analyze social video");
+  }
+  return res.json();
+}
+
+export async function fetchExportedClips(): Promise<{
+  filename: string;
+  download_url: string;
+  size_bytes: number;
+  created_at: string;
+}[]> {
+  try {
+    const res = await fetch(`${BASE_URL}/exports`, {
+      headers: { ...getAuthHeader() },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.exports || [];
+    }
+  } catch {
+    // offline fallback
+  }
+  return [];
 }

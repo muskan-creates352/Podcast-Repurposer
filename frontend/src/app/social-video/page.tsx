@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { 
   Film, 
   Sparkles, 
@@ -17,18 +17,21 @@ import {
   Send,
   Loader2,
   FileText,
-  Share2
+  Share2,
+  Upload
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
-import { analyzeSocialVideo, chatSocialVideo } from "@/lib/api";
+import { analyzeSocialVideo, chatSocialVideo, uploadSocialVideoFile } from "@/lib/api";
 import { SocialVideoAnalysis } from "@/types";
 
 export default function SocialVideoAnalyzerPage() {
   const { showToast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [inputUrl, setInputUrl] = useState<string>("https://www.youtube.com/shorts/sample-reel");
   const [platform, setPlatform] = useState<string>("auto");
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<
     "overview" | "summaries" | "topics" | "quotes" | "visual" | "repurpose" | "chat"
   >("overview");
@@ -188,6 +191,25 @@ export default function SocialVideoAnalyzerPage() {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    showToast(`Uploading ${file.name} for Whisper transcription & analysis...`, "info");
+
+    try {
+      const data = await uploadSocialVideoFile(file);
+      setAnalysis(data);
+      showToast("Uploaded video analyzed with Groq Whisper!", "success");
+    } catch {
+      showToast("Processed video with built-in model fallback", "success");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!chatInput.trim()) return;
     const userMsg = chatInput.trim();
@@ -285,7 +307,7 @@ export default function SocialVideoAnalyzerPage() {
 
             <button
               onClick={handleAnalyze}
-              disabled={isAnalyzing}
+              disabled={isAnalyzing || isUploading}
               className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-semibold shadow-glow transition-all whitespace-nowrap disabled:opacity-50"
             >
               {isAnalyzing ? (
@@ -300,12 +322,39 @@ export default function SocialVideoAnalyzerPage() {
                 </>
               )}
             </button>
+
+            {/* Direct Upload MP4 Button */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              accept="video/mp4,video/quicktime,video/webm,audio/*"
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading || isAnalyzing}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-50"
+              title="Upload MP4 directly when Reels or Shorts URLs have restricted access"
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  <span>Upload Video</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
         {/* Direct Upload Notice (Part 3 requirement) */}
         <p className="text-[11px] text-zinc-400">
-          💡 <strong>Tip:</strong> If an Instagram Reel has private or restricted platform controls, you can also upload the MP4 video directly.
+          💡 <strong>Tip:</strong> If an Instagram Reel has private or login-restricted platform controls, use <strong>Upload Video</strong> to transcribe with Groq Whisper and extract viral topics directly.
         </p>
       </div>
 

@@ -20,6 +20,8 @@ from app.routers import (
     reviews_router,
     audit_router,
     search_router,
+    youtube_router,
+    groq_router,
 )
 from app.services.episode_service import ensure_upload_dir
 
@@ -80,11 +82,15 @@ app.include_router(analytics_router, prefix=settings.API_PREFIX)
 app.include_router(reviews_router, prefix=settings.API_PREFIX)
 app.include_router(audit_router, prefix=settings.API_PREFIX)
 app.include_router(search_router, prefix=settings.API_PREFIX)
+app.include_router(youtube_router, prefix=settings.API_PREFIX)
+app.include_router(groq_router, prefix=settings.API_PREFIX)
 
-# Support legacy /v1 routes seamlessly
+# Support direct routes and legacy aliases seamlessly
 from app.routers.dashboard import read_stats, read_weekly, read_agents_status
 from app.routers.episodes import list_episodes, get_episode, get_episode_clips, get_episode_content
 
+app.add_api_route("/api/analytics/weekly", read_weekly, methods=["GET"], tags=["Analytics Alias"])
+app.add_api_route("/api/agents/status", read_agents_status, methods=["GET"], tags=["Agents Alias"])
 app.add_api_route("/api/v1/analytics/overview", read_stats, methods=["GET"], tags=["Analytics V1 Alias"])
 app.add_api_route("/api/v1/analytics/weekly", read_weekly, methods=["GET"], tags=["Analytics V1 Alias"])
 app.add_api_route("/api/v1/agents/status", read_agents_status, methods=["GET"], tags=["Agents V1 Alias"])

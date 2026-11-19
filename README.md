@@ -202,36 +202,85 @@ This project is being executed over a 3-month timeline across three evaluation p
 
 ---
 
-## Local Setup
+## Viva Preparation & Examiner Q&A Guide 🎓
 
-### 1. Clone the repository
+### 1. Key Technical Questions & Answers
+
+**Q1: What problem does Podcast Repurposer solve that existing AI wrappers cannot?**
+> *Answer:* Most existing tools use single-prompt LLM wrappers that hallucinate timestamps, suffer from context drift on 60+ minute audio, and lack source provenance. Podcast Repurposer solves this using a deterministic multi-agent state graph (LangGraph) with strict source-timestamp citations, multi-lingual support (English, Hindi, Hinglish), and real FFmpeg video demuxing/subtitle burn-in.
+
+**Q2: Why did you choose Groq Cloud as your primary AI inference engine?**
+> *Answer:* Long-form audio processing and multi-asset generation require low-latency inference. Groq's LPU (Language Processing Unit) architecture delivers `llama-3.3-70b-versatile` at ~300+ tokens/second and `whisper-large-v3-turbo` for near-instant speech-to-text. This allows generating 10+ social assets and 3-tier summaries in under 60 seconds instead of waiting several minutes.
+
+**Q3: How do you prevent AI hallucinations in summaries and quotes?**
+> *Answer:* Every generated quote, topic, and summary chunk is grounded in exact audio second timestamps (`[MM:SS]`). The backend validates LLM outputs against Pydantic schemas. If a citation doesn't match the transcript segments, the verification node triggers a bounded retry or flags it for human review.
+
+**Q4: How does the YouTube and Social Video Import work?**
+> *Answer:* Users paste a YouTube or Shorts/Reels link. The system extracts the video ID, retrieves authentic video metadata via oEmbed and yt-dlp, and fetches captions using `youtube-transcript-api`. If subtitles are disabled or restricted (e.g. login-gated Instagram Reels), the app allows uploading the MP4 directly, where system FFmpeg extracts the audio track for Whisper transcription.
+
+**Q5: How does Clip Studio export MP4 videos?**
+> *Answer:* Rather than just showing a CSS mockup, Clip Studio connects to FastAPI's `/api/clips/export` endpoint. The backend calls `ffmpeg` with custom filtergraphs to trim the exact start/end range, format into requested aspect ratios (9:16 vertical, 16:9 widescreen, 1:1 square), and burn in styled captions with custom fonts and positions.
+
+---
+
+## Live Viva Demonstration Script 🚀
+
+Follow this sequence to deliver an impressive, flawless demo to your external examiner:
+
+1. **Dashboard (`/dashboard`):** Show the executive metrics, processing agent pipelines, and interactive weekly generation trends.
+2. **YouTube Import (`/youtube`):** Paste a YouTube or Shorts link (e.g., `https://www.youtube.com/watch?v=...`), show real-time video ID validation, metadata preview, and AI topic/timestamp extraction.
+3. **Podcast Insights (`/insights`):** 
+   - Demonstrate the 3-tier summaries (**30-Second Elevator Pitch**, **1-Minute Executive**, **Detailed Chapter Breakdown**).
+   - Switch language between **English**, **Hindi (हिंदी)**, and **Hinglish** to showcase multi-lingual intelligence.
+   - Click any timestamp to show audio alignment.
+4. **Social Video Analyzer (`/social-video`):** Show short-form reel breakdown, visual frame insights, and test the multi-lingual video chat.
+5. **Clip Studio (`/clip-studio`):**
+   - Select a highlight clip.
+   - Switch aspect ratio between `9:16` (Vertical Reel), `16:9` (YouTube), and `1:1` (Square).
+   - Adjust subtitle font size and color.
+   - Click **Export MP4 Video** to render with system FFmpeg and download the rendered video.
+6. **Export Center (`/export-center`):** View all rendered MP4s and markdown reports ready for distribution.
+7. **AI Chatbot (`/chat`):** Ask questions about the podcast in English or Hinglish with source timestamp citations.
+
+---
+
+## Local Setup & Quickstart
+
+### Prerequisites
+- Python 3.11+
+- Node.js 18+ & npm
+- FFmpeg installed and available on system PATH (`ffmpeg -version`)
+
+### 1. Backend Setup
 ```bash
-git clone https://github.com/muskan-creates352/Podcast-Repurposer.git
-cd Podcast-Repurposer
-```
+cd backend
+python -m venv venv
 
-### 2. Run the Frontend
+# Windows PowerShell:
+.\venv\Scripts\Activate.ps1
+# Linux/macOS:
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+# Run the FastAPI server:
+uvicorn app.main:app --reload --port 8000
+```
+- Swagger API Docs: `http://localhost:8000/docs`
+- Health Check: `http://localhost:8000/api/health`
+
+### 2. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open `http://localhost:3000` in your browser.
+- Web Application: `http://localhost:3000`
 
-### 3. Run the Backend
-```bash
-cd backend
-python -m venv venv
-
-# Windows
-.\venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-API documentation will be available at `http://localhost:8000/docs`.
+### 3. Groq Cloud Configuration
+1. Open the app and navigate to **Settings** (`/settings`).
+2. Enter your `GROQ_API_KEY` in the Groq Cloud card and click **Save Key**.
+3. Or add `GROQ_API_KEY=gsk_...` directly into `backend/.env`.
 
 ---
 
@@ -246,6 +295,6 @@ API documentation will be available at `http://localhost:8000/docs`.
 
 ## Team
 
-- **Muskan Kumari** — Frontend & Backend Development, LangGraph Pipeline, Documentation
+- **Muskan Kumari** — Frontend & Backend Development, LangGraph Pipeline, Groq Integration, Documentation
 - **Shivani Patel** — Frontend & Backend Development, RAG Retrieval, Testing & Evaluation
 - **Mentor:** **Hamdaan Sir**

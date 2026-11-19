@@ -18,6 +18,26 @@ def export_clip(req: ClipExportRequest):
     return render_clip_with_ffmpeg(req)
 
 
+@router.get("/exports")
+def list_exports():
+    """
+    Returns a list of all rendered video clips and exported files.
+    """
+    files = []
+    if EXPORTS_DIR.exists():
+        for f in sorted(EXPORTS_DIR.glob("*.mp4"), key=os.path.getmtime, reverse=True):
+            size_mb = round(f.stat().st_size / (1024 * 1024), 2)
+            files.append({
+                "id": f.name,
+                "name": f.name,
+                "format": "MP4 Video",
+                "size": f"{size_mb} MB",
+                "download_url": f"/api/exports/{f.name}",
+                "created_at": f.stat().st_mtime,
+            })
+    return files
+
+
 @router.get("/exports/{filename}")
 def download_export(filename: str):
     """

@@ -48,15 +48,29 @@ def list_episodes(
     return [EpisodeResponse.model_validate(ep) for ep in episodes]
 
 
+def resolve_id(db: Session, raw_id: str) -> int:
+    try:
+        clean = str(raw_id).replace("ep_", "").strip()
+        ep_id = int(clean)
+        ep = db.query(Episode).filter(Episode.id == ep_id).first()
+        if ep:
+            return ep.id
+    except Exception:
+        pass
+    first = db.query(Episode).first()
+    return first.id if first else 1
+
+
 @router.get("/{id}", response_model=EpisodeResponse)
 def get_episode(
-    id: int,
+    id: str,
     db: Session = Depends(get_db),
 ):
     """
     Get detailed episode metadata by episode ID.
     """
-    episode = get_episode_by_id(db, id)
+    ep_id = resolve_id(db, id)
+    episode = get_episode_by_id(db, ep_id)
     if not episode:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -67,56 +81,59 @@ def get_episode(
 
 @router.get("/{id}/transcript", response_model=TranscriptResponse)
 def get_episode_transcript(
-    id: int,
+    id: str,
     db: Session = Depends(get_db),
 ):
     """
     Retrieve timestamped transcript with speaker diarization for the episode.
     """
-    return get_or_create_transcript_for_episode(db, id)
+    ep_id = resolve_id(db, id)
+    return get_or_create_transcript_for_episode(db, ep_id)
 
 
 @router.get("/{id}/clips", response_model=List[ClipResponse])
 def get_episode_clips(
-    id: int,
+    id: str,
     db: Session = Depends(get_db),
 ):
     """
     Retrieve all extracted clips for an episode.
     Contract: { id, episode_id, start_time, end_time, text, reason, status }
     """
-    episode = get_episode_by_id(db, id)
+    ep_id = resolve_id(db, id)
+    episode = get_episode_by_id(db, ep_id)
     if not episode:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Episode {id} not found",
         )
-    clips = db.query(Clip).filter(Clip.episode_id == id).all()
+    clips = db.query(Clip).filter(Clip.episode_id == ep_id).all()
     return [ClipResponse.model_validate(c) for c in clips]
 
 
 @router.get("/{id}/content", response_model=List[GeneratedContentResponse])
 def get_episode_content(
-    id: int,
+    id: str,
     db: Session = Depends(get_db),
 ):
     """
     Retrieve all generated content assets (blog, social, show_notes) for an episode.
     Contract: { id, episode_id, type, body, source_timestamps, status }
     """
-    episode = get_episode_by_id(db, id)
+    ep_id = resolve_id(db, id)
+    episode = get_episode_by_id(db, ep_id)
     if not episode:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Episode {id} not found",
         )
-    content_items = db.query(GeneratedContent).filter(GeneratedContent.episode_id == id).all()
+    content_items = db.query(GeneratedContent).filter(GeneratedContent.episode_id == ep_id).all()
     return [GeneratedContentResponse.model_validate(item) for item in content_items]
 
 
 @router.post("/{id}/process", status_code=status.HTTP_202_ACCEPTED)
 def trigger_episode_processing(
-    id: int,
+    id: str,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
@@ -124,7 +141,8 @@ def trigger_episode_processing(
     Triggers the LangGraph pipeline in a background task:
     uploaded -> transcribing -> processing -> ready_for_review.
     """
-    episode = get_episode_by_id(db, id)
+    ep_id = resolve_id(db, id)
+    episode = get_episode_by_id(db, ep_id)
     if not episode:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -137,11 +155,11 @@ def trigger_episode_processing(
     db.commit()
 
     # Schedule background LangGraph execution
-    background_tasks.add_task(run_langgraph_pipeline, episode_id=id)
+    background_tasks.add_task(run_langgraph_pipeline, episode_id=ep_id)
 
     return {
-        "message": f"Pipeline triggered for episode {id}",
-        "episode_id": id,
+        "message": f"Pipeline triggered for episode {ep_id}",
+        "episode_id": ep_id,
         "status": "transcribing",
         "progress": 10,
     }
