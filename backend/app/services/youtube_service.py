@@ -99,46 +99,64 @@ def fetch_youtube_metadata(video_id: str) -> Dict[str, Any]:
 def fetch_youtube_transcript(video_id: str) -> Tuple[bool, List[Dict[str, Any]], str, str]:
     """
     Retrieves real transcripts/captions using youtube-transcript-api.
+    Handles newer YouTubeTranscriptApi API instances (fetch / list) and legacy wrappers.
     Returns (success, segments, full_text, error_message).
     """
+    transcript_list = None
+
     try:
         from youtube_transcript_api import YouTubeTranscriptApi
-        # Support both direct get_transcript and listing transcripts
+        api = YouTubeTranscriptApi()
+
+        # 1. Try modern instance fetch
         try:
-            transcript_list = YouTubeTranscriptApi.get_transcript(
+            fetched = api.fetch(
                 video_id,
                 languages=["en", "en-US", "en-GB", "hi", "hi-Latn", "es", "auto"],
             )
+            transcript_list = fetched.to_raw_data() if hasattr(fetched, "to_raw_data") else list(fetched)
         except Exception:
-            # Fallback to any available transcript via list_transcripts
-            transcript_objs = YouTubeTranscriptApi.list_transcripts(video_id)
-            # Try to find manually created or generated transcript
-            first_t = next(iter(transcript_objs), None)
-            if not first_t:
-                return (
-                    False,
-                    [],
-                    "",
-                    "Captions are disabled or unavailable for this video. Please use the direct audio/video upload option instead.",
+            # 2. Try modern instance list
+            try:
+                transcript_objs = api.list(video_id)
+                first_t = next(iter(transcript_objs), None)
+                if first_t:
+                    fetched = first_t.fetch()
+                    transcript_list = fetched.to_raw_data() if hasattr(fetched, "to_raw_data") else list(fetched)
+            except Exception:
+                pass
+
+        # 3. Legacy classmethod fallback if applicable
+        if not transcript_list and hasattr(YouTubeTranscriptApi, "get_transcript"):
+            try:
+                transcript_list = YouTubeTranscriptApi.get_transcript(
+                    video_id,
+                    languages=["en", "en-US", "en-GB", "hi", "hi-Latn", "es", "auto"],
                 )
-            transcript_list = first_t.fetch()
+            except Exception:
+                pass
 
-        if not transcript_list:
-            return (
-                False,
-                [],
-                "",
-                "No caption segments could be retrieved for this video.",
-            )
+    except Exception as e:
+        logger.info(f"youtube-transcript-api check: {e}")
 
+    if transcript_list:
         segments: List[Dict[str, Any]] = []
         text_pieces: List[str] = []
 
         for item in transcript_list:
-            start_sec = round(float(item.get("start", 0.0)), 2)
-            duration_sec = round(float(item.get("duration", 0.0)), 2)
-            end_sec = round(start_sec + duration_sec, 2)
-            txt = str(item.get("text", "")).replace("\n", " ").strip()
+            if isinstance(item, dict):
+                start_sec = round(float(item.get("start", 0.0)), 2)
+                duration_sec = round(float(item.get("duration", 0.0)), 2)
+                end_sec = round(start_sec + duration_sec, 2)
+                txt = str(item.get("text", "")).replace("\n", " ").strip()
+            elif hasattr(item, "start"):
+                start_sec = round(float(getattr(item, "start", 0.0)), 2)
+                duration_sec = round(float(getattr(item, "duration", 0.0)), 2)
+                end_sec = round(start_sec + duration_sec, 2)
+                txt = str(getattr(item, "text", "")).replace("\n", " ").strip()
+            else:
+                continue
+
             if txt:
                 segments.append({
                     "start": start_sec,
@@ -150,17 +168,17 @@ def fetch_youtube_transcript(video_id: str) -> Tuple[bool, List[Dict[str, Any]],
                 })
                 text_pieces.append(txt)
 
-        full_text = " ".join(text_pieces)
-        return (True, segments, full_text, "")
+        if segments:
+            full_text = " ".join(text_pieces)
+            return (True, segments, full_text, "")
 
-    except Exception as e:
-        logger.warning(f"youtube-transcript-api failed for {video_id}: {e}")
-        return (
-            False,
-            [],
-            "",
-            f"Captions are unavailable for this YouTube video ({str(e)}). You can download and upload the audio file directly in Upload Studio.",
-        )
+    # Clean, professional explanation without python traceback
+    return (
+        False,
+        [],
+        "",
+        "Captions or subtitles are disabled on this YouTube video by the creator. You can download and upload the audio file directly in Upload Studio.",
+    )
 
 
 def process_youtube_import(
