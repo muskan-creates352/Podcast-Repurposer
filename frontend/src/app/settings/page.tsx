@@ -220,7 +220,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Left Side Navigation Tabs */}
         <aside className="md:col-span-4 lg:col-span-3 space-y-1">
-          <nav className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-2 space-y-1 shadow-sm">
+          <nav className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-2 space-y-1 shadow-sm">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -255,7 +255,7 @@ export default function SettingsPage() {
           </nav>
 
           {/* Quick Backend Status Pill */}
-          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 flex items-center justify-between text-xs">
+          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 flex items-center justify-between text-xs">
             <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">FastAPI Server</span>
             {backendStatus === "online" && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-500">
@@ -284,7 +284,7 @@ export default function SettingsPage() {
           {activeTab === "general" && (
             <div className="space-y-6 animate-slide-up">
               {/* Profile Information */}
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <User className="w-4 h-4 text-brand-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -341,7 +341,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Theme Preference */}
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <Sun className="w-4 h-4 text-amber-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -385,7 +385,7 @@ export default function SettingsPage() {
           {/* TAB 2: NOTIFICATIONS */}
           {activeTab === "notifications" && (
             <div className="space-y-6 animate-slide-up">
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <Bell className="w-4 h-4 text-brand-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -498,7 +498,7 @@ export default function SettingsPage() {
           {activeTab === "ai" && (
             <div className="space-y-6 animate-slide-up">
               {/* GROQ CLOUD PRIMARY AI PROVIDER CARD */}
-              <div className="bg-white dark:bg-[#121215] border border-purple-500/30 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-purple-500/50 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-purple-500/30 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-purple-500/50 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
@@ -615,7 +615,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Backend & API Connectivity */}
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <div className="flex items-center gap-2">
                     <Key className="w-4 h-4 text-brand-500" />
@@ -692,7 +692,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Model & Hyperparameters */}
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <Cpu className="w-4 h-4 text-brand-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -795,7 +795,7 @@ export default function SettingsPage() {
           {/* TAB 4: CONTENT PREFERENCES */}
           {activeTab === "content" && (
             <div className="space-y-6 animate-slide-up">
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-5 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-5 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <Mic className="w-4 h-4 text-brand-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -896,7 +896,7 @@ export default function SettingsPage() {
           {/* TAB 5: PRIVACY & STORAGE */}
           {activeTab === "privacy" && (
             <div className="space-y-6 animate-slide-up">
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-5 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-5 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <HardDrive className="w-4 h-4 text-brand-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -995,7 +995,7 @@ export default function SettingsPage() {
                   href="http://localhost:8000/docs"
                   target="_blank"
                   rel="noreferrer"
-                  className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 hover:border-brand-500 transition-all flex items-start justify-between shadow-sm group"
+                  className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 hover:border-brand-500 transition-all flex items-start justify-between shadow-sm group"
                 >
                   <div className="space-y-1">
                     <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
@@ -1009,7 +1009,7 @@ export default function SettingsPage() {
                   <ExternalLink className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition-all" />
                 </a>
 
-                <div className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 flex items-start justify-between shadow-sm">
+                <div className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 flex items-start justify-between shadow-sm">
                   <div className="space-y-1">
                     <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
                       <Bot className="w-4 h-4 text-sky-500" />
@@ -1023,7 +1023,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Project & Viva Information */}
-              <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
+              <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm hover:border-zinc-700/80 transition-colors">
                 <div className="flex items-center gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                   <Info className="w-4 h-4 text-brand-500" />
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">

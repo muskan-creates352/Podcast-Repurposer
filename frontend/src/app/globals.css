@@ -14,13 +14,13 @@
   }
 
   .dark {
-    --background: #0B1020;
+    --background: #101426;
     --foreground: #F8FAFC;
-    --card: #171D2E;
+    --card: #171E35;
     --card-foreground: #F8FAFC;
-    --border: #1E293B;
+    --border: #232B4E;
     --muted: #94A3B8;
-    --muted-bg: #111827;
+    --muted-bg: #080B18;
   }
 
   body {

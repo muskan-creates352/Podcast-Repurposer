@@ -12,19 +12,21 @@ const config: Config = {
     extend: {
       colors: {
         saas: {
-          bg: "#0B1020",
-          sidebar: "#111827",
-          card: "#171D2E",
-          purple: "#7C3AED",
+          midnight: "#080B18",
+          bg: "#101426",
+          card: "#171E35",
+          purple: "#8B5CF6",
+          violet: "#A855F7",
+          pink: "#EC4899",
+          cyan: "#22D3EE",
           blue: "#3B82F6",
-          teal: "#14B8A6",
-          pink: "#F472B6",
-          text: "#F8FAFC",
+          green: "#10B981",
+          white: "#F8FAFC",
         },
         zinc: {
-          850: "#1e1e24",
-          900: "#171D2E",
-          950: "#0B1020",
+          850: "#171E35",
+          900: "#101426",
+          950: "#080B18",
         },
         brand: {
           50: "#f5f3ff",

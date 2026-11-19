@@ -153,7 +153,7 @@ export default function EpisodeDetailPage() {
       </div>
 
       {/* Episode Header Summary Card */}
-      <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm space-y-3">
+      <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm space-y-3">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1 min-w-0">
             <div className="flex items-center gap-2.5">
@@ -213,7 +213,7 @@ export default function EpisodeDetailPage() {
         {/* Right Column: Repurposed Content Studio (7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
           {/* Main Repurpose Mode Switcher */}
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-2 flex items-center justify-between shadow-sm">
+          <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-2 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-1">
               <button
                 type="button"
@@ -251,7 +251,7 @@ export default function EpisodeDetailPage() {
           {activeStudioTab === "clips" && (
             <div className="space-y-4">
               {clips.length === 0 ? (
-                <div className="p-12 text-center text-xs text-zinc-400 bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                <div className="p-12 text-center text-xs text-zinc-400 bg-white dark:bg-[#171E35] rounded-2xl border border-zinc-200 dark:border-zinc-800">
                   Highlight agent is still analyzing transcript segments...
                 </div>
               ) : (

@@ -124,7 +124,7 @@ export default function UploadPage() {
       {/* Active Processing State: Live Agent Stepper & Polling Telemetry */}
       {activeEpisodeId && pollingEpisode ? (
         <div className="space-y-6">
-          <div className="p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
+          <div className="p-5 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <Radio className="w-5 h-5 text-brand-500 animate-pulse" />
@@ -162,7 +162,7 @@ export default function UploadPage() {
           />
 
           {/* Action buttons upon completion */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="p-5 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
                 {isReady
@@ -199,7 +199,7 @@ export default function UploadPage() {
         </div>
       ) : (
         /* Upload Form */
-        <form onSubmit={handleStartProcessing} className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+        <form onSubmit={handleStartProcessing} className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
           <div>
             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
               Episode Title

@@ -64,7 +64,7 @@ export default function AnalyticsPage() {
 
       {/* KPI Metric Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-zinc-500 text-xs">
             <span>Total Episodes</span>
             <div className="p-1.5 rounded-lg bg-brand-500/10 text-brand-500">
@@ -82,7 +82,7 @@ export default function AnalyticsPage() {
           <p className="text-[11px] text-zinc-400">Archived & indexed in vector store</p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-zinc-500 text-xs">
             <span>Viral Clips Scored</span>
             <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500">
@@ -100,7 +100,7 @@ export default function AnalyticsPage() {
           <p className="text-[11px] text-zinc-400">Extracted across all episodes</p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-zinc-500 text-xs">
             <span>Editor Approval Rate</span>
             <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
@@ -118,7 +118,7 @@ export default function AnalyticsPage() {
           <p className="text-[11px] text-zinc-400">High ground truth & provenance trust</p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-zinc-500 text-xs">
             <span>Avg Processing Time</span>
             <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
@@ -140,7 +140,7 @@ export default function AnalyticsPage() {
       {/* Grid of 4 Recharts Visualizations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chart 1: Episodes Processed Per Week (BarChart) */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
@@ -177,7 +177,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Chart 2: Approval vs Rejection Rate (Pie/Donut Chart) */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
@@ -223,7 +223,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Chart 3: Average Processing Time Trend (AreaChart) */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
@@ -272,7 +272,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Chart 4: Content Types Generated Breakdown (BarChart) */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">

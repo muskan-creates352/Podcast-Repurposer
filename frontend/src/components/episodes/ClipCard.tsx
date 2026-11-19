@@ -62,7 +62,7 @@ export function ClipCard({ clip, onSeek, onStatusChange }: ClipCardProps) {
 
   return (
     <div
-      className={`border rounded-2xl p-4 transition-all duration-200 bg-white dark:bg-[#121215] shadow-sm space-y-3 ${
+      className={`border rounded-2xl p-4 transition-all duration-200 bg-white dark:bg-[#171E35] shadow-sm space-y-3 ${
         currentStatus === "approved"
           ? "border-emerald-500/40 bg-emerald-500/[0.02]"
           : currentStatus === "rejected"

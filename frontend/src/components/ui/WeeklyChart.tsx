@@ -19,7 +19,7 @@ interface WeeklyChartProps {
 
 export function WeeklyChart({ data }: WeeklyChartProps) {
   return (
-    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-zinc-700/80 transition-all duration-200">
+    <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-zinc-700/80 transition-all duration-200">
       <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/60">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500">

@@ -59,7 +59,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 animate-slide-up pb-16 max-w-7xl mx-auto">
       {/* Premium Hero Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-violet-950/60 via-[#121215] to-[#141419] border border-violet-500/20 shadow-2xl backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-violet-950/60 via-[#171E35] to-[#141419] border border-violet-500/20 shadow-2xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-600/10 via-indigo-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">

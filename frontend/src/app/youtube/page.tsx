@@ -187,7 +187,7 @@ export default function YouTubeImportPage() {
       </div>
 
       {/* URL Input Form */}
-      <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+      <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
         <form onSubmit={(e) => handleFetchMetadata(e)} className="space-y-4">
           <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
             Paste YouTube Podcast URL
@@ -367,7 +367,7 @@ export default function YouTubeImportPage() {
 
       {/* Repurposed Results Workspace */}
       {intelligence && metadata && (
-        <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm animate-slide-up">
+        <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm animate-slide-up">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-4">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-semibold">

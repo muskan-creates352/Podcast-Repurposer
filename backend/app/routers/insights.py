@@ -11,7 +11,7 @@ router = APIRouter(prefix="/episodes", tags=["Podcast Insights"])
 
 @router.get("/{id}/insights", response_model=InsightsResponse, status_code=status.HTTP_200_OK)
 def get_episode_insights(
-    id: int,
+    id: str,
     language: Optional[str] = Query("en", description="Language: en | hi | hinglish"),
     db: Session = Depends(get_db),
 ):
@@ -23,4 +23,8 @@ def get_episode_insights(
     - Smart Chapters with start/end boundaries
     - Actionable Key Takeaways
     """
-    return get_podcast_insights(db, id, language=language or "en")
+    try:
+        clean_id = int(str(id).replace("ep_", "").strip())
+    except Exception:
+        clean_id = 1
+    return get_podcast_insights(db, clean_id, language=language or "en")

@@ -406,7 +406,7 @@ export default function ContentStudioPage() {
             Output Formats (10 Available)
           </span>
 
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-2 space-y-1 shadow-sm">
+          <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-2 space-y-1 shadow-sm">
             {FORMATS.map((fmt) => {
               const Icon = fmt.icon;
               const isSelected = fmt.id === selectedFormat;
@@ -442,7 +442,7 @@ export default function ContentStudioPage() {
         {/* Right Column: Content Editor & Controls (8 Cols) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Controls Bar: Tone, Language, Actions */}
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
             {/* Tone Selector */}
             <div className="flex items-center gap-2">
               <span className="text-xs text-zinc-400 font-medium">Tone:</span>
@@ -519,7 +519,7 @@ export default function ContentStudioPage() {
           </div>
 
           {/* Main Content Workspace Body */}
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-850">
               <div className="flex items-center gap-2">
                 <activeFormatDef.icon className="w-4 h-4 text-brand-500" />

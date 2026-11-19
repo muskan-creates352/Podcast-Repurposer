@@ -154,7 +154,7 @@ function ReviewStudioContent() {
           <select
             value={selectedEpisodeId}
             onChange={(e) => handleSelectEpisode(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-brand-500"
           >
             {episodes.map((ep) => (
               <option key={ep.id} value={ep.id}>
@@ -167,7 +167,7 @@ function ReviewStudioContent() {
 
       {/* Selected Episode Summary Card */}
       {currentEpisode && (
-        <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-2.5">
             <Radio className="w-4 h-4 text-brand-500" />
             <span className="font-semibold text-zinc-900 dark:text-white">
@@ -249,7 +249,7 @@ function ReviewStudioContent() {
       {activeTab === "clips" && (
         <div className="space-y-4">
           {clips.length === 0 ? (
-            <div className="p-8 text-center text-xs text-zinc-400 bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-zinc-800">
+            <div className="p-8 text-center text-xs text-zinc-400 bg-white dark:bg-[#171E35] rounded-2xl border border-zinc-200 dark:border-zinc-800">
               No clips extracted for this episode yet. Go to Upload or trigger processing.
             </div>
           ) : (
@@ -261,7 +261,7 @@ function ReviewStudioContent() {
               return (
                 <div
                   key={clip.id}
-                  className={`p-5 rounded-2xl border bg-white dark:bg-[#121215] shadow-sm space-y-3 transition-all ${
+                  className={`p-5 rounded-2xl border bg-white dark:bg-[#171E35] shadow-sm space-y-3 transition-all ${
                     isApproved
                       ? "border-emerald-500/40 bg-emerald-500/[0.02]"
                       : isRejected
@@ -376,7 +376,7 @@ function ReviewStudioContent() {
 
       {/* Tab 2: SEO Blog Post Draft */}
       {activeTab === "blog" && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 space-y-4">
+        <div className="p-6 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -415,7 +415,7 @@ function ReviewStudioContent() {
 
       {/* Tab 3: Social Captions */}
       {activeTab === "social" && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 space-y-4">
+        <div className="p-6 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -454,7 +454,7 @@ function ReviewStudioContent() {
 
       {/* Tab 4: Show Notes */}
       {activeTab === "show_notes" && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 space-y-4">
+        <div className="p-6 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -493,7 +493,7 @@ function ReviewStudioContent() {
 
       {/* Tab 5: Full Audio Transcript */}
       {activeTab === "transcript" && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 space-y-4">
+        <div className="p-6 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">

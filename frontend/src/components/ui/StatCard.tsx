@@ -31,7 +31,7 @@ export function StatCard({
   };
 
   const cardContent = (
-    <div className="relative group bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-brand-500/70 dark:hover:border-brand-500/70 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_0_25px_rgba(139,92,246,0.18)] transition-all duration-200 cursor-pointer select-none">
+    <div className="relative group bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-brand-500/70 dark:hover:border-brand-500/70 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_0_25px_rgba(139,92,246,0.18)] transition-all duration-200 cursor-pointer select-none">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5">

@@ -35,7 +35,7 @@ export function TranscriptViewer({
   }, [currentTime]);
 
   return (
-    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl flex flex-col h-[650px] shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl flex flex-col h-[650px] shadow-sm overflow-hidden">
       {/* Header with Search */}
       <div className="p-3.5 border-b border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between gap-3">
         <div>

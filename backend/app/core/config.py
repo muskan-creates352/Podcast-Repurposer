@@ -1,7 +1,13 @@
 import json
+import os
+from pathlib import Path
 from typing import List, Union
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
+_DEFAULT_DB_FILE = (_BACKEND_DIR / "podcast.db").as_posix()
+_DEFAULT_DB_URL = f"sqlite:///{_DEFAULT_DB_FILE}"
 
 
 class Settings(BaseSettings):
@@ -31,7 +37,7 @@ class Settings(BaseSettings):
         return ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     # Database: Supports PostgreSQL or local SQLite fallback
-    DATABASE_URL: str = "sqlite:///./podcast.db"
+    DATABASE_URL: str = _DEFAULT_DB_URL
 
     # JWT Authentication
     SECRET_KEY: str = "college_viva_super_secret_jwt_key_2026_secure_key"

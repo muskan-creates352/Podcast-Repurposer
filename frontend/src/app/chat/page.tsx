@@ -199,7 +199,7 @@ export default function ChatbotPage() {
       </div>
 
       {/* Chat Messages Container */}
-      <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-4 sm:p-6 shadow-sm flex flex-col h-[560px]">
+      <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-4 sm:p-6 shadow-sm flex flex-col h-[560px]">
         <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           {messages.map((m) => (
             <div

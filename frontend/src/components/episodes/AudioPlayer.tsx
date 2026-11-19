@@ -151,7 +151,7 @@ export function AudioPlayer({
   };
 
   return (
-    <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-4 shadow-md sticky top-20 z-10 backdrop-blur-md">
+    <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-4 shadow-md sticky top-20 z-10 backdrop-blur-md">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="p-2 rounded-xl bg-brand-500/10 text-brand-500 shrink-0">
