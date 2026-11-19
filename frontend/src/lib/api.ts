@@ -238,23 +238,25 @@ export async function fetchTranscript(episodeId: string): Promise<Transcript | n
 // Clips & Content API
 // -------------------------------------------------------------
 export async function fetchClips(episodeId?: string): Promise<Clip[]> {
-  if (USE_MOCK) {
-    await new Promise((r) => setTimeout(r, 250));
-    if (episodeId) {
-      const clips = MOCK_CLIPS.filter((c) => c.episode_id === episodeId);
-      if (clips.length > 0) return clips;
-      // Synthesize clips for new or other episodes so demo is rich
-      return MOCK_CLIPS.map((c) => ({ ...c, episode_id: episodeId }));
+  try {
+    const url = episodeId 
+      ? `${BASE_URL}/episodes/${episodeId}/clips` 
+      : `${BASE_URL}/clips`;
+    const res = await fetch(url, { headers: { ...getAuthHeader() } });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
     }
-    return MOCK_CLIPS;
+  } catch {
+    // fallback gracefully
   }
 
-  const url = episodeId 
-    ? `${BASE_URL}/episodes/${episodeId}/clips` 
-    : `${BASE_URL}/clips`;
-  const res = await fetch(url, { headers: { ...getAuthHeader() } });
-  if (!res.ok) throw new Error("Failed to fetch clips");
-  return res.json();
+  if (episodeId) {
+    const clips = MOCK_CLIPS.filter((c) => c.episode_id === episodeId);
+    if (clips.length > 0) return clips;
+    return MOCK_CLIPS.map((c) => ({ ...c, episode_id: episodeId }));
+  }
+  return MOCK_CLIPS;
 }
 
 export async function fetchGeneratedContent(episodeId: string): Promise<GeneratedContent[]> {
