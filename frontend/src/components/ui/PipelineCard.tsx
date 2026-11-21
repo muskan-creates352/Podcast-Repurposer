@@ -11,30 +11,30 @@ export function PipelineCard({ agents }: PipelineCardProps) {
   const getAgentIcon = (id: string) => {
     switch (id) {
       case "agent_asr":
-        return <Mic className="w-4 h-4 text-amber-400" />;
+        return <Mic className="w-4 h-4 text-amber-500" />;
       case "agent_highlight":
-        return <Scissors className="w-4 h-4 text-violet-400" />;
+        return <Scissors className="w-4 h-4 text-brand-500" />;
       case "agent_content":
-        return <FileText className="w-4 h-4 text-cyan-400" />;
+        return <FileText className="w-4 h-4 text-sky-500" />;
       case "agent_explain":
-        return <ShieldCheck className="w-4 h-4 text-emerald-400" />;
+        return <ShieldCheck className="w-4 h-4 text-emerald-500" />;
       default:
-        return <Zap className="w-4 h-4 text-[#9CA3AF]" />;
+        return <Zap className="w-4 h-4 text-zinc-400" />;
     }
   };
 
   return (
-    <div className="bg-[#171C26] border border-white/[0.07] rounded-2xl p-5 shadow-sm hover:border-white/[0.12] transition-all duration-200">
-      <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20">
+    <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-5 shadow-sm hover:border-zinc-700/80 transition-all duration-200">
+      <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/60">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-brand-500/10 text-brand-500">
             <Activity className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-[#F5F7FA]">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               LangGraph Multi-Agent Pipeline
             </h3>
-            <p className="text-xs text-[#9CA3AF]">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Parallel execution & state machine orchestration
             </p>
           </div>
@@ -42,15 +42,15 @@ export function PipelineCard({ agents }: PipelineCardProps) {
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-xs font-medium text-emerald-400">
+          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
             Pipeline Active
           </span>
         </div>
       </div>
 
-      <div className="mt-4 space-y-2.5">
+      <div className="mt-4 space-y-3">
         {agents.map((agent) => {
           const isRunning = agent.status === "running";
           const isCompleted = agent.status === "completed";
@@ -59,30 +59,30 @@ export function PipelineCard({ agents }: PipelineCardProps) {
             <Link
               key={agent.id}
               href="/review"
-              className="group block p-3 rounded-xl border border-white/[0.05] bg-[#141821] hover:bg-[#1A202C] hover:border-violet-500/40 hover:translate-x-0.5 hover:shadow-sm transition-all duration-200 cursor-pointer"
+              className="group block p-3 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 hover:border-brand-500/60 dark:hover:border-brand-500/60 hover:translate-x-1 hover:shadow-sm transition-all duration-200 cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-[#171C26] border border-white/[0.06] shadow-sm group-hover:scale-105 group-hover:border-violet-500/30 transition-transform">
+                  <div className="p-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-700/60 shadow-subtle group-hover:scale-110 group-hover:border-brand-500/40 transition-transform">
                     {getAgentIcon(agent.id)}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-[#F5F7FA] group-hover:text-violet-300 transition-colors">
+                      <span className="text-sm font-medium text-zinc-900 dark:text-zinc-200 group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors">
                         {agent.name}
                       </span>
                       {isRunning && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse">
                           Running
                         </span>
                       )}
                       {isCompleted && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                           Ready
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-[#9CA3AF] mt-0.5">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                       {agent.currentTask || agent.description}
                     </p>
                   </div>
@@ -90,14 +90,14 @@ export function PipelineCard({ agents }: PipelineCardProps) {
 
                 <div className="flex items-center gap-2">
                   <div className="text-right">
-                    <span className="text-[11px] font-mono font-medium text-[#9CA3AF] block">
+                    <span className="text-[11px] font-mono font-medium text-zinc-400 dark:text-zinc-500 block">
                       {agent.latency}
                     </span>
-                    <span className="text-[10px] text-[#9CA3AF]/70">
+                    <span className="text-[11px] text-zinc-400 dark:text-zinc-500">
                       {agent.lastActive}
                     </span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-violet-400 shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-brand-500 shrink-0" />
                 </div>
               </div>
             </Link>

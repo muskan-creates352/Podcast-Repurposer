@@ -14,43 +14,43 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
   > = {
     uploaded: {
       label: "Uploaded",
-      bg: "bg-white/[0.04]",
-      text: "text-[#9CA3AF]",
-      border: "border-white/[0.08]",
-      icon: <UploadCloud className="w-3 h-3" />,
+      bg: "bg-zinc-500/10",
+      text: "text-zinc-600 dark:text-zinc-400",
+      border: "border-zinc-300 dark:border-zinc-700",
+      icon: <UploadCloud className="w-3.5 h-3.5" />,
     },
     transcribing: {
       label: "Transcribing",
       bg: "bg-amber-500/10",
-      text: "text-amber-400",
-      border: "border-amber-500/20",
-      icon: <Loader2 className="w-3 h-3 animate-spin" />,
+      text: "text-amber-600 dark:text-amber-400",
+      border: "border-amber-300/40 dark:border-amber-500/30",
+      icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,
     },
     processing: {
       label: "Processing AI",
-      bg: "bg-violet-500/10",
-      text: "text-violet-400",
-      border: "border-violet-500/20",
-      icon: <Sparkles className="w-3 h-3 animate-pulse" />,
+      bg: "bg-brand-500/10",
+      text: "text-brand-600 dark:text-brand-400",
+      border: "border-brand-300/40 dark:border-brand-500/30",
+      icon: <Sparkles className="w-3.5 h-3.5 animate-pulse" />,
     },
     ready_for_review: {
       label: "Ready for Review",
-      bg: "bg-cyan-500/10",
-      text: "text-cyan-400",
-      border: "border-cyan-500/20",
-      icon: <Clock className="w-3 h-3" />,
+      bg: "bg-sky-500/10",
+      text: "text-sky-600 dark:text-sky-400",
+      border: "border-sky-300/40 dark:border-sky-500/30",
+      icon: <Clock className="w-3.5 h-3.5" />,
     },
     published: {
       label: "Published",
       bg: "bg-emerald-500/10",
-      text: "text-emerald-400",
-      border: "border-emerald-500/20",
-      icon: <CheckCircle className="w-3 h-3" />,
+      text: "text-emerald-600 dark:text-emerald-400",
+      border: "border-emerald-300/40 dark:border-emerald-500/30",
+      icon: <CheckCircle className="w-3.5 h-3.5" />,
     },
   };
 
   const config = configs[status] || configs.uploaded;
-  const padding = size === "sm" ? "px-2 py-0.5 text-[11px]" : "px-2.5 py-1 text-xs";
+  const padding = size === "sm" ? "px-2 py-0.5 text-xs" : "px-2.5 py-1 text-xs";
 
   return (
     <span

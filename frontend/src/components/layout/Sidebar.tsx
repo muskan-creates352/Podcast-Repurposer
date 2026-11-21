@@ -67,23 +67,23 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`border-r border-white/[0.06] bg-[#0B0D12] flex flex-col justify-between h-screen sticky top-0 z-30 transition-all duration-300 select-none ${
+      className={`border-r border-zinc-200/80 dark:border-[#232B4E] bg-white/95 dark:bg-[#080B18] backdrop-blur-xl flex flex-col justify-between h-screen sticky top-0 z-30 transition-all duration-300 select-none ${
         isCollapsed ? "w-20" : "w-64"
       }`}
     >
       <div>
         {/* Brand Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-white/[0.06]">
-          <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] flex items-center justify-center text-white shadow-[0_0_15px_rgba(139,92,246,0.35)] shrink-0 transition-transform group-hover:scale-105">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-100 dark:border-zinc-800/60">
+          <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-violet-700 flex items-center justify-center text-white shadow-glow shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
             {!isCollapsed && (
               <div className="min-w-0 transition-opacity duration-200">
-                <span className="text-sm font-bold tracking-tight text-[#F5F7FA] flex items-center gap-1.5 truncate">
+                <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-1 truncate">
                   PodcastRepurpose
                 </span>
-                <span className="text-[10px] text-[#9CA3AF] font-medium tracking-wide uppercase block truncate">
+                <span className="text-[10px] text-zinc-400 font-medium tracking-wide uppercase block truncate">
                   One Podcast. Endless Content.
                 </span>
               </div>
@@ -94,7 +94,7 @@ export function Sidebar() {
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] transition-colors"
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -106,11 +106,11 @@ export function Sidebar() {
           {navSections.map((section, sIdx) => (
             <div key={section.title} className="space-y-1">
               {!isCollapsed ? (
-                <p className="px-3 pt-2 pb-1 text-[10px] font-semibold text-[#6B7280] uppercase tracking-wider">
+                <p className="px-3 pt-2 pb-1 text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                   {section.title}
                 </p>
               ) : (
-                sIdx > 0 && <div className="my-2 border-t border-white/[0.06] mx-2" />
+                sIdx > 0 && <div className="my-2 border-t border-zinc-200 dark:border-zinc-800/60 mx-2" />
               )}
 
               {section.items.map((item) => {
@@ -127,16 +127,16 @@ export function Sidebar() {
                       isCollapsed ? "justify-center" : "justify-between"
                     } px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 group ${
                       isActive
-                        ? "bg-violet-500/10 text-violet-400 font-semibold border border-violet-500/20 shadow-sm"
-                        : "text-[#9CA3AF] hover:bg-[#141821] hover:text-[#F5F7FA] border border-transparent"
+                        ? "bg-brand-500/15 text-brand-600 dark:text-brand-400 font-semibold shadow-sm"
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-200"
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <Icon
                         className={`w-4 h-4 shrink-0 transition-colors ${
                           isActive
-                            ? "text-violet-400"
-                            : "text-[#9CA3AF] group-hover:text-[#F5F7FA]"
+                            ? "text-brand-600 dark:text-brand-400"
+                            : "text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200"
                         }`}
                       />
                       {!isCollapsed && <span className="truncate">{item.name}</span>}
@@ -145,7 +145,7 @@ export function Sidebar() {
                     {!isCollapsed && item.badge && (
                       <span
                         className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold text-white shadow-sm shrink-0 ${
-                          item.badgeColor || "bg-[#8B5CF6]"
+                          item.badgeColor || "bg-brand-500"
                         }`}
                       >
                         {item.badge}
@@ -160,22 +160,22 @@ export function Sidebar() {
       </div>
 
       {/* Footer Profile Section */}
-      <div className="p-3 border-t border-white/[0.06]">
+      <div className="p-3 border-t border-zinc-100 dark:border-zinc-800/60">
         <div
-          className={`p-2 rounded-xl bg-[#141821] border border-white/[0.06] flex items-center ${
+          className={`p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800 flex items-center ${
             isCollapsed ? "justify-center" : "justify-between"
           }`}
         >
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#8B5CF6] to-[#22D3EE] text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-sky-400 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
               {userInitial}
             </div>
             {!isCollapsed && (
               <div className="min-w-0">
-                <p className="text-xs font-medium text-[#F5F7FA] truncate">
+                <p className="text-xs font-medium text-zinc-900 dark:text-zinc-200 truncate">
                   {user?.name || "Muskan Kumari"}
                 </p>
-                <p className="text-[10px] text-[#9CA3AF] truncate">
+                <p className="text-[10px] text-zinc-400 truncate">
                   {user?.email || "muskan@podcast.ai"}
                 </p>
               </div>
@@ -186,7 +186,7 @@ export function Sidebar() {
             <button
               onClick={logout}
               title="Sign Out"
-              className="p-1.5 rounded-lg text-[#9CA3AF] hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
             >
               <LogOut className="w-4 h-4" />
             </button>
