@@ -21,7 +21,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   Clock,
-  Radio
+  Radio,
+  Sparkles,
 } from "lucide-react";
 
 export function Topbar() {
@@ -100,23 +101,23 @@ export function Topbar() {
   const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "M";
 
   return (
-    <header className="h-16 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-[#0c0c0e]/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-20">
+    <header className="h-16 border-b border-white/[0.06] bg-[#0B0D12]/80 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-30 transition-colors">
       {/* Global Quick Search - Hidden on /search to avoid duplicate search inputs */}
       {pathname !== "/search" ? (
         <form onSubmit={handleGlobalSearch} className="flex items-center gap-2 w-72 sm:w-96">
           <div className="relative w-full">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search transcripts, clips, or episodes..."
-              className="w-full pl-9 pr-20 py-2 text-xs rounded-xl bg-zinc-100/90 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all"
+              className="w-full pl-9 pr-20 py-1.5 text-xs rounded-xl bg-[#141821] border border-white/[0.08] text-[#F5F7FA] placeholder:text-[#9CA3AF] focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 hover:border-white/[0.15] transition-all"
             />
             <button
               type="submit"
               title="Search transcripts & episodes"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-brand-600 hover:bg-brand-500 active:scale-95 text-white text-[11px] font-semibold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-violet-600 hover:bg-violet-500 active:scale-95 text-white text-[11px] font-semibold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
             >
               <Search className="w-3 h-3" />
               <span>Search</span>
@@ -124,11 +125,11 @@ export function Topbar() {
           </div>
         </form>
       ) : (
-        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
-          <span className="p-1.5 rounded-lg bg-brand-500/10 text-brand-500 border border-brand-500/20">
-            <Search className="w-4 h-4" />
+        <div className="flex items-center gap-2 text-xs font-semibold text-[#F5F7FA]">
+          <span className="p-1.5 rounded-lg bg-violet-500/10 text-violet-400 border border-violet-500/20">
+            <Sparkles className="w-3.5 h-3.5" />
           </span>
-          <span className="tracking-tight">Podcast Intelligence Studio</span>
+          <span className="tracking-tight text-sm font-medium">Podcast Intelligence Studio</span>
         </div>
       )}
 
@@ -137,7 +138,7 @@ export function Topbar() {
         {/* Quick Upload Button */}
         <Link
           href="/upload"
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-glow transition-all"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_rgba(139,92,246,0.45)] transition-all cursor-pointer"
         >
           <UploadCloud className="w-3.5 h-3.5" />
           <span>Upload Episode</span>
@@ -147,12 +148,12 @@ export function Topbar() {
         <button
           onClick={toggleTheme}
           title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          className="p-2 rounded-xl text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] border border-transparent hover:border-white/[0.06] transition-colors"
         >
           {theme === "dark" ? (
             <Sun className="w-4 h-4 text-amber-400" />
           ) : (
-            <Moon className="w-4 h-4 text-zinc-700" />
+            <Moon className="w-4 h-4 text-zinc-400" />
           )}
         </button>
 
@@ -163,26 +164,26 @@ export function Topbar() {
               setShowNotifications(!showNotifications);
               setShowProfileMenu(false);
             }}
-            className="p-2 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative"
+            className="p-2 rounded-xl text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] border border-transparent hover:border-white/[0.06] transition-colors relative"
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 px-1 min-w-[14px] h-3.5 rounded-full bg-brand-500 text-[9px] font-bold text-white flex items-center justify-center shadow-sm">
+              <span className="absolute top-1 right-1 px-1 min-w-[14px] h-3.5 rounded-full bg-violet-500 text-[9px] font-bold text-white flex items-center justify-center shadow-sm">
                 {unreadCount}
               </span>
             )}
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-84 sm:w-96 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-700 shadow-xl p-4 z-50 animate-slide-up text-xs">
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+            <div className="absolute right-0 mt-2 w-84 sm:w-96 rounded-2xl bg-[#171C26] border border-white/[0.08] shadow-2xl p-4 z-50 animate-slide-up text-xs backdrop-blur-xl">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                  <span className="font-semibold text-[#F5F7FA]">
                     Notifications
                   </span>
                   {unreadCount > 0 && (
-                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-brand-500/10 text-brand-500 font-semibold">
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-violet-500/10 text-violet-400 font-semibold border border-violet-500/20">
                       {unreadCount} new
                     </span>
                   )}
@@ -190,7 +191,7 @@ export function Topbar() {
                 <button
                   type="button"
                   onClick={handleMarkAllRead}
-                  className="text-[11px] text-brand-500 hover:underline"
+                  className="text-[11px] text-violet-400 hover:text-violet-300 hover:underline"
                 >
                   Mark all as read
                 </button>
@@ -198,7 +199,7 @@ export function Topbar() {
 
               <div className="mt-2 space-y-2 max-h-72 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <p className="py-4 text-center text-zinc-400 text-xs">
+                  <p className="py-4 text-center text-[#9CA3AF] text-xs">
                     No notifications at this time
                   </p>
                 ) : (
@@ -208,30 +209,30 @@ export function Topbar() {
                       onClick={() => handleNotificationClick(n)}
                       className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-start gap-2.5 ${
                         n.read
-                          ? "bg-zinc-50/50 dark:bg-zinc-900/40 border-zinc-100 dark:border-zinc-800 opacity-70"
-                          : "bg-white dark:bg-zinc-850 border-brand-500/30 shadow-sm"
+                          ? "bg-[#141821]/50 border-white/[0.04] opacity-70"
+                          : "bg-[#141821] border-violet-500/30 shadow-sm hover:border-violet-500/50"
                       }`}
                     >
                       <div className="p-1 rounded-lg shrink-0 mt-0.5">
                         {n.type === "ready_for_review" && (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                         )}
                         {n.type === "failed" && (
-                          <AlertTriangle className="w-4 h-4 text-rose-500" />
+                          <AlertTriangle className="w-4 h-4 text-rose-400" />
                         )}
                         {n.type === "processing" && (
-                          <Clock className="w-4 h-4 text-brand-500" />
+                          <Clock className="w-4 h-4 text-violet-400" />
                         )}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className={`text-xs ${n.read ? "text-zinc-600 dark:text-zinc-300" : "font-semibold text-zinc-900 dark:text-zinc-100"}`}>
+                        <p className={`text-xs ${n.read ? "text-[#9CA3AF]" : "font-semibold text-[#F5F7FA]"}`}>
                           {n.title}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] text-zinc-400">{n.time}</span>
+                          <span className="text-[10px] text-[#9CA3AF]">{n.time}</span>
                           {n.episode_id && (
-                            <span className="text-[10px] text-brand-500 font-mono hover:underline flex items-center gap-0.5">
+                            <span className="text-[10px] text-violet-400 font-mono hover:underline flex items-center gap-0.5">
                               <Radio className="w-2.5 h-2.5" />
                               View Studio
                             </span>
@@ -240,7 +241,7 @@ export function Topbar() {
                       </div>
 
                       {!n.read && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0 mt-1.5" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0 mt-1.5 shadow-[0_0_6px_rgba(139,92,246,0.8)]" />
                       )}
                     </div>
                   ))
@@ -258,31 +259,31 @@ export function Topbar() {
               setShowProfileMenu(!showProfileMenu);
               setShowNotifications(false);
             }}
-            className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-sky-400 hover:ring-2 hover:ring-brand-500/50 transition-all text-white flex items-center justify-center text-xs font-bold shadow-sm cursor-pointer select-none"
+            className="w-8 h-8 rounded-full bg-gradient-to-tr from-violet-600 via-purple-500 to-cyan-400 hover:ring-2 hover:ring-violet-500/50 transition-all text-white flex items-center justify-center text-xs font-bold shadow-sm cursor-pointer select-none"
             title="Profile Menu & Sign Out"
           >
             {userInitial}
           </button>
 
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-700 shadow-2xl p-2 z-50 animate-slide-up text-xs">
+            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#171C26] border border-white/[0.08] shadow-2xl p-2 z-50 animate-slide-up text-xs backdrop-blur-xl">
               {/* User Header Info */}
-              <div className="p-3 pb-3 border-b border-zinc-100 dark:border-zinc-800/80">
+              <div className="p-3 pb-3 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-600 to-sky-400 text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-violet-600 via-purple-500 to-cyan-400 text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">
                     {userInitial}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                    <p className="font-semibold text-[#F5F7FA] truncate">
                       {user?.name || "Muskan Kumari"}
                     </p>
-                    <p className="text-[11px] text-zinc-400 truncate">
+                    <p className="text-[11px] text-[#9CA3AF] truncate">
                       {user?.email || "muskan@podcastrepurposer.ai"}
                     </p>
                   </div>
                 </div>
-                <div className="mt-2.5 flex items-center gap-1 text-[10px] text-emerald-500 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                <div className="mt-2.5 flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
                   <span>Active Workspace Session</span>
                 </div>
               </div>
@@ -292,40 +293,40 @@ export function Topbar() {
                 <Link
                   href="/analytics"
                   onClick={() => setShowProfileMenu(false)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] transition-colors"
                 >
-                  <Search className="w-3.5 h-3.5 text-zinc-400" />
+                  <Search className="w-3.5 h-3.5 text-[#9CA3AF]" />
                   <span>Studio Analytics</span>
                 </Link>
 
                 <Link
                   href="/settings"
                   onClick={() => setShowProfileMenu(false)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] transition-colors"
                 >
-                  <Settings className="w-3.5 h-3.5 text-zinc-400" />
+                  <Settings className="w-3.5 h-3.5 text-[#9CA3AF]" />
                   <span>Workspace Settings</span>
                 </Link>
 
                 <Link
                   href="/login"
                   onClick={() => setShowProfileMenu(false)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <Users className="w-3.5 h-3.5 text-brand-400" />
+                    <Users className="w-3.5 h-3.5 text-violet-400" />
                     <span>Switch User Account</span>
                   </div>
-                  <span className="text-[10px] text-zinc-400">Login</span>
+                  <span className="text-[10px] text-[#9CA3AF]">Login</span>
                 </Link>
               </div>
 
               {/* Sign Out Action */}
-              <div className="pt-1.5 border-t border-zinc-100 dark:border-zinc-800/80">
+              <div className="pt-1.5 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors font-medium text-left"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-colors font-medium text-left"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Sign Out / Log Out</span>

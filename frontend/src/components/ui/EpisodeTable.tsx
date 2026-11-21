@@ -22,32 +22,32 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
   );
 
   return (
-    <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl overflow-hidden shadow-sm hover:border-zinc-700/80 transition-all duration-200">
-      <div className="p-5 border-b border-zinc-100 dark:border-zinc-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="bg-[#171C26] border border-white/[0.07] rounded-2xl overflow-hidden shadow-sm hover:border-white/[0.12] transition-all duration-200">
+      <div className="p-5 border-b border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <h3 className="text-sm font-semibold text-[#F5F7FA]">
             Recent Episodes
           </h3>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-[#9CA3AF]">
             Real-time status, transcription progress, and review pipelines
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
             <input
               type="text"
               placeholder="Search episodes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-8 py-1.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all"
+              className="pl-9 pr-8 py-1.5 text-xs rounded-xl bg-[#141821] border border-white/[0.08] text-[#F5F7FA] placeholder:text-[#9CA3AF] focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 hover:border-white/[0.15] transition-all"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#F5F7FA]"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -55,7 +55,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
           </div>
           <Link
             href="/episodes"
-            className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-500 dark:hover:text-brand-300 flex items-center gap-1 transition-all px-2.5 py-1.5 rounded-lg hover:bg-brand-500/10"
+            className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-all px-2.5 py-1.5 rounded-lg hover:bg-violet-500/10"
           >
             <span>View all</span>
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -65,7 +65,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="bg-zinc-50/50 dark:bg-zinc-900/30 text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-800/60 uppercase tracking-wider font-medium">
+          <thead className="bg-[#141821] text-[#9CA3AF] border-b border-white/[0.06] uppercase tracking-wider font-medium text-[11px]">
             <tr>
               <th className="px-5 py-3">Episode Title</th>
               <th className="px-5 py-3">Status</th>
@@ -75,16 +75,16 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
               <th className="px-5 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <tbody className="divide-y divide-white/[0.04]">
             {filteredEpisodes.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-zinc-400">
+                <td colSpan={6} className="px-5 py-8 text-center text-[#9CA3AF]">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <p>No episodes found matching &ldquo;{searchTerm}&rdquo;.</p>
                     {searchTerm && (
                       <button
                         onClick={() => setSearchTerm("")}
-                        className="text-xs text-brand-500 hover:underline font-medium"
+                        className="text-xs text-violet-400 hover:underline font-medium"
                       >
                         Clear search filter
                       </button>
@@ -97,15 +97,15 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                 <tr
                   key={episode.id}
                   onClick={() => router.push(`/review?episode=${episode.id}`)}
-                  className="hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 transition-colors duration-150 group cursor-pointer"
+                  className="hover:bg-[#1A202C] transition-colors duration-150 group cursor-pointer"
                 >
-                  <td className="px-5 py-3.5 font-medium text-zinc-900 dark:text-zinc-200 max-w-xs truncate">
+                  <td className="px-5 py-3.5 font-medium text-[#F5F7FA] max-w-xs truncate">
                     <Link
                       href={`/episodes/${episode.id}`}
-                      className="flex items-center gap-2.5 group-hover:text-brand-500 transition-colors"
+                      className="flex items-center gap-2.5 group-hover:text-violet-300 transition-colors"
                       title="Open Episode Studio"
                     >
-                      <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 group-hover:text-brand-500 group-hover:bg-brand-500/10 transition-colors">
+                      <div className="p-1.5 rounded-lg bg-[#141821] text-[#9CA3AF] group-hover:text-violet-400 group-hover:bg-violet-500/10 border border-white/[0.04] transition-colors">
                         <Play className="w-3 h-3 fill-current" />
                       </div>
                       <span className="truncate">{episode.title}</span>
@@ -114,34 +114,34 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
                   <td className="px-5 py-3.5">
                     <StatusBadge status={episode.status} size="sm" />
                   </td>
-                  <td className="px-5 py-3.5 font-mono text-zinc-500 dark:text-zinc-400">
+                  <td className="px-5 py-3.5 font-mono text-[#9CA3AF]">
                     {episode.duration}
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2 max-w-[140px]">
-                      <div className="flex-1 h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="flex-1 h-1.5 bg-[#141821] border border-white/[0.04] rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${
                             episode.progress === 100
-                              ? "bg-emerald-500"
-                              : "bg-brand-500 animate-pulse-subtle"
+                              ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                              : "bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]"
                           }`}
                           style={{ width: `${episode.progress}%` }}
                         />
                       </div>
-                      <span className="text-[11px] font-mono text-zinc-400">
+                      <span className="text-[11px] font-mono text-[#9CA3AF]">
                         {episode.progress}%
                       </span>
                     </div>
                   </td>
-                  <td className="px-5 py-3.5 text-zinc-500 dark:text-zinc-400">
+                  <td className="px-5 py-3.5 text-[#9CA3AF]">
                     {formatDate(episode.created_at)}
                   </td>
                   <td className="px-5 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1.5">
                       <Link
                         href={`/episodes/${episode.id}`}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-brand-500/10 hover:bg-brand-500 hover:text-white text-brand-600 dark:text-brand-400 transition-all duration-150"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-violet-500/10 hover:bg-violet-600 hover:text-white text-violet-400 border border-violet-500/20 transition-all duration-150"
                       >
                         <span>Studio</span>
                         <ArrowRight className="w-3 h-3" />
@@ -149,7 +149,7 @@ export function EpisodeTable({ episodes }: EpisodeTableProps) {
 
                       <Link
                         href={`/review?episode=${episode.id}`}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 dark:hover:text-white text-zinc-700 dark:text-zinc-300 transition-all duration-150 shadow-sm"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-[#141821] hover:bg-violet-600 hover:text-white text-[#9CA3AF] hover:text-white border border-white/[0.06] hover:border-violet-500/30 transition-all duration-150 shadow-sm"
                       >
                         <span>Review</span>
                       </Link>

@@ -75,46 +75,49 @@ export default function ClipStudioPage() {
   const [selectedClipId, setSelectedClipId] = useState<string>("clip_s1");
   const [isPlaying, setIsPlaying] = useState(false);
   
-  // Aspect Ratio & Subtitle Styling States (Part 2)
+  // Aspect Ratio & Subtitle Styling States
   const [aspectRatio, setAspectRatio] = useState<"9:16" | "16:9" | "1:1">("9:16");
   const [fontSize, setFontSize] = useState<number>(24);
   const [fontColor, setFontColor] = useState<string>("yellow");
   const [position, setPosition] = useState<"bottom" | "center" | "top">("bottom");
-  const [editableTitle, setEditableTitle] = useState<string>("");
   const [editableCaption, setEditableCaption] = useState<string>("");
-  const [isExporting, setIsExporting] = useState<boolean>(false);
-  const [exportProgress, setExportProgress] = useState<number>(0);
+  const [editableTitle, setEditableTitle] = useState<string>("");
+
+  // FFmpeg Export State
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
 
   const activeClip = clips.find((c) => c.id === selectedClipId) || clips[0];
 
   const handleSelectClip = (clip: StudioClip) => {
     setSelectedClipId(clip.id);
-    setEditableTitle(clip.title);
     setEditableCaption(clip.hook);
-    setIsPlaying(false);
+    setEditableTitle(clip.title);
   };
 
-  const handleUpdateStatus = (id: string, newStatus: StudioClip["status"]) => {
+  const handleUpdateStatus = (id: string, status: "approved" | "rejected") => {
     setClips((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
+      prev.map((c) => (c.id === id ? { ...c, status } : c))
     );
-    showToast(
-      newStatus === "approved" ? "Clip approved for publishing!" : "Clip rejected from queue",
-      newStatus === "approved" ? "success" : "info"
-    );
+    showToast(`Clip ${status === "approved" ? "approved" : "rejected"}`, "success");
   };
 
-  const handleAdjustTime = (field: "startTime" | "endTime", delta: number) => {
+  const handleAdjustTime = (type: "startTime" | "endTime", delta: number) => {
     setClips((prev) =>
       prev.map((c) => {
         if (c.id === activeClip.id) {
-          const updated = { ...c, [field]: Math.max(0, c[field] + delta) };
+          const updated = { ...c };
+          if (type === "startTime") {
+            updated.startTime = Math.max(0, updated.startTime + delta);
+          } else {
+            updated.endTime = Math.max(updated.startTime + 5, updated.endTime + delta);
+          }
           return updated;
         }
         return c;
       })
     );
-    showToast(`Updated timestamp range`, "info");
+    showToast(`Adjusted ${type === "startTime" ? "Start" : "End"} Time by ${delta > 0 ? `+${delta}` : delta}s`, "info");
   };
 
   // Real FFmpeg Video Export
@@ -163,15 +166,15 @@ export default function ClipStudioPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-slide-up pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5F7FA] flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20">
               <Scissors className="w-5 h-5" />
             </div>
             <span>AI Viral Clip Studio</span>
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#9CA3AF] mt-1">
             Real FFmpeg video rendering, aspect ratio switching (9:16, 16:9, 1:1), subtitle styling, and viral moment trimming.
           </p>
         </div>
@@ -181,7 +184,7 @@ export default function ClipStudioPage() {
           type="button"
           onClick={handleExportClip}
           disabled={isExporting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-glow transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-[0_0_20px_rgba(139,92,246,0.35)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] transition-all disabled:opacity-50 cursor-pointer"
         >
           {isExporting ? (
             <>
@@ -201,10 +204,10 @@ export default function ClipStudioPage() {
         {/* Left Column: Clips List & Viral Rankings (4 Cols) */}
         <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between px-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF]">
               Detected Highlights ({clips.length})
             </span>
-            <span className="text-[11px] text-purple-400 font-mono">
+            <span className="text-[11px] text-violet-400 font-mono">
               Scored by Groq AI
             </span>
           </div>
@@ -220,32 +223,32 @@ export default function ClipStudioPage() {
                   onClick={() => handleSelectClip(clip)}
                   className={`p-4 rounded-2xl border transition-all cursor-pointer relative ${
                     isSelected
-                      ? "bg-purple-950/20 border-purple-500/80 shadow-md ring-1 ring-purple-500/30"
-                      : "bg-white dark:bg-zinc-900/70 border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-700"
+                      ? "bg-violet-500/10 border-violet-500/60 shadow-[0_0_20px_rgba(139,92,246,0.15)] ring-1 ring-violet-500/30"
+                      : "bg-[#171C26] border-white/[0.07] hover:border-violet-500/30"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                    <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-violet-500/10 text-violet-400 border border-violet-500/20">
                       <TrendingUp className="w-3.5 h-3.5" />
                       <span>Viral Score: {clip.viralScore}/100</span>
                     </span>
 
-                    <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-mono">
+                    <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF] font-mono">
                       <Clock className="w-3 h-3" />
                       <span>{formatSeconds(clip.startTime)} - {formatSeconds(clip.endTime)}</span>
-                      <span className="text-[10px] text-zinc-500">({durationSec}s)</span>
+                      <span className="text-[10px] text-[#9CA3AF]/70">({durationSec}s)</span>
                     </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white line-clamp-1 mb-1">
+                  <h3 className="text-sm font-bold text-[#F5F7FA] line-clamp-1 mb-1">
                     {clip.title}
                   </h3>
 
-                  <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2 italic mb-3">
+                  <p className="text-xs text-[#9CA3AF] line-clamp-2 italic mb-3">
                     &ldquo;{clip.hook}&rdquo;
                   </p>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+                  <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
                     <span
                       className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
                         clip.status === "approved"
@@ -262,7 +265,7 @@ export default function ClipStudioPage() {
                       <button
                         type="button"
                         onClick={() => handleUpdateStatus(clip.id, "approved")}
-                        className="p-1 rounded-lg hover:bg-emerald-500/20 text-zinc-400 hover:text-emerald-400 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-emerald-500/20 text-[#9CA3AF] hover:text-emerald-400 transition-colors cursor-pointer"
                         title="Approve Clip"
                       >
                         <Check className="w-3.5 h-3.5" />
@@ -270,7 +273,7 @@ export default function ClipStudioPage() {
                       <button
                         type="button"
                         onClick={() => handleUpdateStatus(clip.id, "rejected")}
-                        className="p-1 rounded-lg hover:bg-rose-500/20 text-zinc-400 hover:text-rose-400 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-rose-500/20 text-[#9CA3AF] hover:text-rose-400 transition-colors cursor-pointer"
                         title="Reject Clip"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -285,20 +288,20 @@ export default function ClipStudioPage() {
 
         {/* Right Column: Video Preview & Editing Workspace (8 Cols) */}
         <div className="lg:col-span-8 space-y-5">
-          {/* Aspect Ratio Switcher Bar (Part 2) */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-            <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5 text-purple-400" />
+          {/* Aspect Ratio Switcher Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm">
+            <span className="text-xs font-semibold text-[#9CA3AF] flex items-center gap-1.5">
+              <Sliders className="w-3.5 h-3.5 text-violet-400" />
               <span>Aspect Ratio:</span>
             </span>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setAspectRatio("9:16")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   aspectRatio === "9:16"
-                    ? "bg-purple-600 text-white shadow-sm"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    ? "bg-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                    : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -307,10 +310,10 @@ export default function ClipStudioPage() {
 
               <button
                 onClick={() => setAspectRatio("16:9")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   aspectRatio === "16:9"
-                    ? "bg-purple-600 text-white shadow-sm"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    ? "bg-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                    : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                 }`}
               >
                 <Monitor className="w-3.5 h-3.5" />
@@ -319,10 +322,10 @@ export default function ClipStudioPage() {
 
               <button
                 onClick={() => setAspectRatio("1:1")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   aspectRatio === "1:1"
-                    ? "bg-purple-600 text-white shadow-sm"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    ? "bg-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                    : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                 }`}
               >
                 <Square className="w-3.5 h-3.5" />
@@ -332,10 +335,10 @@ export default function ClipStudioPage() {
           </div>
 
           {/* Video Player Box */}
-          <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden min-h-[380px]">
+          <div className="p-6 rounded-3xl bg-[#0B0D12] border border-white/[0.08] shadow-2xl flex flex-col items-center justify-center relative overflow-hidden min-h-[380px]">
             {/* Background Canvas representation */}
             <div
-              className={`relative rounded-2xl overflow-hidden bg-gradient-to-b from-zinc-900 via-purple-950/30 to-zinc-900 border border-zinc-700/60 shadow-2xl transition-all duration-300 flex flex-col justify-between p-4 ${
+              className={`relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#141821] via-violet-950/20 to-[#141821] border border-white/[0.08] shadow-2xl transition-all duration-300 flex flex-col justify-between p-4 ${
                 aspectRatio === "9:16"
                   ? "w-64 h-[420px]"
                   : aspectRatio === "1:1"
@@ -344,11 +347,11 @@ export default function ClipStudioPage() {
               }`}
             >
               {/* Top hook label */}
-              <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                <span className="px-2 py-0.5 rounded bg-black/60 border border-zinc-700">
+              <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] font-mono">
+                <span className="px-2 py-0.5 rounded bg-black/60 border border-white/[0.08]">
                   {aspectRatio}
                 </span>
-                <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">
+                <span className="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">
                   AI Viral Hook
                 </span>
               </div>
@@ -363,7 +366,7 @@ export default function ClipStudioPage() {
                     : "mt-auto mb-3"
                 }`}
               >
-                <div className="inline-block px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-purple-500/30 shadow-lg">
+                <div className="inline-block px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-violet-500/30 shadow-lg">
                   <p
                     style={{
                       fontSize: `${fontSize}px`,
@@ -371,9 +374,9 @@ export default function ClipStudioPage() {
                         fontColor === "yellow"
                           ? "#facc15"
                           : fontColor === "cyan"
-                          ? "#38bdf8"
+                          ? "#22D3EE"
                           : fontColor === "violet"
-                          ? "#c084fc"
+                          ? "#A78BFA"
                           : "#ffffff",
                     }}
                     className="font-extrabold tracking-wide uppercase leading-tight drop-shadow-md"
@@ -391,7 +394,7 @@ export default function ClipStudioPage() {
                     style={{
                       height: isPlaying ? `${Math.max(6, (val * (idx % 2 === 0 ? 1.2 : 0.7)))}%` : "20%",
                     }}
-                    className="w-1 rounded-full bg-purple-400 transition-all duration-150"
+                    className="w-1 rounded-full bg-violet-400 transition-all duration-150"
                   />
                 ))}
               </div>
@@ -400,36 +403,36 @@ export default function ClipStudioPage() {
             {/* Play/Pause Button on Video */}
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-glow transition-all"
+              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-all cursor-pointer"
             >
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               <span>{isPlaying ? "Pause Preview" : "Play Clip"}</span>
             </button>
           </div>
 
-          {/* Subtitle & Caption Styling Controls (Part 2) */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                <Type className="w-4 h-4 text-purple-400" />
+          {/* Subtitle & Caption Styling Controls */}
+          <div className="p-5 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] flex items-center gap-1.5">
+                <Type className="w-4 h-4 text-violet-400" />
                 <span>Subtitle Style & Positioning</span>
               </span>
-              <span className="text-[11px] text-zinc-500">Live render preview</span>
+              <span className="text-[11px] text-[#9CA3AF]">Live render preview</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Font Size */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-400">Font Size</label>
+                <label className="text-xs font-medium text-[#9CA3AF]">Font Size</label>
                 <div className="flex items-center gap-1">
                   {[18, 24, 30].map((sz) => (
                     <button
                       key={sz}
                       onClick={() => setFontSize(sz)}
-                      className={`flex-1 py-1 rounded-lg text-xs font-semibold transition-all ${
+                      className={`flex-1 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         fontSize === sz
-                          ? "bg-purple-600 text-white"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                          ? "bg-violet-600 text-white shadow-sm"
+                          : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                       }`}
                     >
                       {sz === 18 ? "Small" : sz === 24 ? "Medium" : "Large"}
@@ -440,19 +443,19 @@ export default function ClipStudioPage() {
 
               {/* Font Color */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-400">Subtitle Color</label>
+                <label className="text-xs font-medium text-[#9CA3AF]">Subtitle Color</label>
                 <div className="flex items-center gap-1.5">
                   {[
                     { name: "yellow", bg: "bg-yellow-400" },
                     { name: "white", bg: "bg-white" },
-                    { name: "cyan", bg: "bg-sky-400" },
-                    { name: "violet", bg: "bg-purple-400" },
+                    { name: "cyan", bg: "bg-cyan-400" },
+                    { name: "violet", bg: "bg-violet-400" },
                   ].map((col) => (
                     <button
                       key={col.name}
                       onClick={() => setFontColor(col.name)}
-                      className={`w-7 h-7 rounded-lg ${col.bg} border-2 transition-all ${
-                        fontColor === col.name ? "border-purple-600 scale-110 shadow-sm" : "border-transparent"
+                      className={`w-7 h-7 rounded-lg ${col.bg} border-2 transition-all cursor-pointer ${
+                        fontColor === col.name ? "border-violet-400 scale-110 shadow-sm" : "border-transparent"
                       }`}
                       title={col.name}
                     />
@@ -462,16 +465,16 @@ export default function ClipStudioPage() {
 
               {/* Position */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-400">Position</label>
+                <label className="text-xs font-medium text-[#9CA3AF]">Position</label>
                 <div className="flex items-center gap-1">
                   {(["bottom", "center", "top"] as const).map((pos) => (
                     <button
                       key={pos}
                       onClick={() => setPosition(pos)}
-                      className={`flex-1 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
+                      className={`flex-1 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
                         position === pos
-                          ? "bg-purple-600 text-white"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                          ? "bg-violet-600 text-white shadow-sm"
+                          : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                       }`}
                     >
                       {pos}
@@ -483,67 +486,67 @@ export default function ClipStudioPage() {
 
             {/* Editable Caption Text */}
             <div className="pt-2 space-y-1.5">
-              <label className="text-xs font-medium text-zinc-400">
+              <label className="text-xs font-medium text-[#9CA3AF]">
                 Editable Subtitle Text:
               </label>
               <textarea
                 value={editableCaption || activeClip.hook}
                 onChange={(e) => setEditableCaption(e.target.value)}
                 rows={2}
-                className="w-full p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-full p-2.5 rounded-xl bg-[#141821] border border-white/[0.08] text-xs text-[#F5F7FA] placeholder:text-[#9CA3AF] focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30"
               />
             </div>
           </div>
 
           {/* Interactive Timeline Trimming Controls */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
+          <div className="p-5 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-purple-400" />
+              <span className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-violet-400" />
                 <span>Fine-Tune Clip Range (-1s / +1s)</span>
               </span>
-              <span className="text-xs font-mono text-purple-400">
+              <span className="text-xs font-mono text-cyan-400">
                 Duration: {Math.max(0, activeClip.endTime - activeClip.startTime)}s
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
-                <span className="text-xs text-zinc-400">Start Time:</span>
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#141821] border border-white/[0.06]">
+                <span className="text-xs text-[#9CA3AF]">Start Time:</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleAdjustTime("startTime", -1)}
-                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                    className="px-2 py-0.5 rounded bg-[#171C26] text-xs font-bold text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-violet-600 transition-colors border border-white/[0.06] cursor-pointer"
                   >
                     -1s
                   </button>
-                  <span className="text-xs font-mono font-bold text-zinc-800 dark:text-zinc-200">
+                  <span className="text-xs font-mono font-bold text-[#F5F7FA]">
                     {formatSeconds(activeClip.startTime)}
                   </span>
                   <button
                     onClick={() => handleAdjustTime("startTime", 1)}
-                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                    className="px-2 py-0.5 rounded bg-[#171C26] text-xs font-bold text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-violet-600 transition-colors border border-white/[0.06] cursor-pointer"
                   >
                     +1s
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
-                <span className="text-xs text-zinc-400">End Time:</span>
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#141821] border border-white/[0.06]">
+                <span className="text-xs text-[#9CA3AF]">End Time:</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleAdjustTime("endTime", -1)}
-                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                    className="px-2 py-0.5 rounded bg-[#171C26] text-xs font-bold text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-violet-600 transition-colors border border-white/[0.06] cursor-pointer"
                   >
                     -1s
                   </button>
-                  <span className="text-xs font-mono font-bold text-zinc-800 dark:text-zinc-200">
+                  <span className="text-xs font-mono font-bold text-[#F5F7FA]">
                     {formatSeconds(activeClip.endTime)}
                   </span>
                   <button
                     onClick={() => handleAdjustTime("endTime", 1)}
-                    className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                    className="px-2 py-0.5 rounded bg-[#171C26] text-xs font-bold text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-violet-600 transition-colors border border-white/[0.06] cursor-pointer"
                   >
                     +1s
                   </button>

@@ -35,37 +35,37 @@ export function TranscriptViewer({
   }, [currentTime]);
 
   return (
-    <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl flex flex-col h-[650px] shadow-sm overflow-hidden">
+    <div className="bg-[#171C26] border border-white/[0.07] rounded-2xl flex flex-col h-[650px] shadow-sm overflow-hidden">
       {/* Header with Search */}
-      <div className="p-3.5 border-b border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between gap-3">
+      <div className="p-3.5 border-b border-white/[0.06] flex items-center justify-between gap-3">
         <div>
-          <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-1.5">
+          <h3 className="text-xs font-bold text-[#F5F7FA] uppercase tracking-wider flex items-center gap-1.5">
             <span>Diarized Transcript</span>
-            <span className="text-[10px] font-normal text-zinc-400 font-mono">
+            <span className="text-[10px] font-normal text-[#9CA3AF] font-mono">
               ({segments.length} segments)
             </span>
           </h3>
-          <p className="text-[11px] text-zinc-400">
+          <p className="text-[11px] text-[#9CA3AF]">
             Click any sentence or timestamp to jump audio
           </p>
         </div>
 
         <div className="relative w-48">
-          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
           <input
             type="text"
             placeholder="Search dialogue..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-1 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full pl-8 pr-3 py-1 text-xs rounded-xl bg-[#141821] border border-white/[0.08] text-[#F5F7FA] placeholder:text-[#9CA3AF] focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30"
           />
         </div>
       </div>
 
       {/* Transcript Segments List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2.5 divide-y divide-zinc-100 dark:divide-zinc-850/50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2 divide-y divide-white/[0.04]">
         {filteredSegments.length === 0 ? (
-          <div className="p-8 text-center text-xs text-zinc-400">
+          <div className="p-8 text-center text-xs text-[#9CA3AF]">
             No dialogue matching &ldquo;{searchTerm}&rdquo;
           </div>
         ) : (
@@ -79,18 +79,18 @@ export function TranscriptViewer({
                 onClick={() => onSeek(segment.start)}
                 className={`pt-2.5 p-3 rounded-xl transition-all cursor-pointer group select-text ${
                   isActive
-                    ? "bg-brand-500/10 border-l-4 border-brand-500 shadow-sm"
-                    : "hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border-l-4 border-transparent"
+                    ? "bg-violet-500/10 border-l-4 border-violet-500 shadow-sm"
+                    : "hover:bg-[#141821]/80 border-l-4 border-transparent"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2 mb-1.5">
                   <div className="flex items-center gap-1.5">
-                    <User className="w-3 h-3 text-zinc-400" />
+                    <User className="w-3 h-3 text-[#9CA3AF]" />
                     <span
                       className={`text-xs font-semibold ${
                         isActive
-                          ? "text-brand-600 dark:text-brand-400"
-                          : "text-zinc-800 dark:text-zinc-200"
+                          ? "text-violet-400"
+                          : "text-[#F5F7FA]"
                       }`}
                     >
                       {segment.speaker}
@@ -99,7 +99,7 @@ export function TranscriptViewer({
 
                   <div className="flex items-center gap-1.5">
                     {isActive && (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-brand-500 text-white animate-pulse">
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-violet-500 text-white animate-pulse">
                         <Volume2 className="w-3 h-3" />
                         Playing
                       </span>
@@ -108,8 +108,8 @@ export function TranscriptViewer({
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[10px] transition-colors ${
                         isActive
-                          ? "bg-brand-500/20 text-brand-600 dark:text-brand-300 font-bold"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 group-hover:text-brand-500"
+                          ? "bg-violet-500/20 text-violet-300 font-bold border border-violet-500/30"
+                          : "bg-[#141821] text-[#9CA3AF] group-hover:text-violet-400 border border-white/[0.04]"
                       }`}
                     >
                       <Play className="w-2.5 h-2.5 fill-current" />
@@ -121,8 +121,8 @@ export function TranscriptViewer({
                 <p
                   className={`text-xs leading-relaxed ${
                     isActive
-                      ? "text-zinc-950 dark:text-zinc-50 font-medium"
-                      : "text-zinc-600 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100"
+                      ? "text-[#F5F7FA] font-medium"
+                      : "text-[#9CA3AF] group-hover:text-[#F5F7FA]"
                   }`}
                 >
                   {segment.text}

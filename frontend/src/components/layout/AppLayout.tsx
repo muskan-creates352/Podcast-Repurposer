@@ -20,8 +20,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-zinc-400 gap-2">
-        <Loader2 className="w-5 h-5 animate-spin text-brand-500" />
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0D12] text-[#9CA3AF] gap-2">
+        <Loader2 className="w-5 h-5 animate-spin text-[#8B5CF6]" />
         <span className="text-xs font-medium">Initializing workspace...</span>
       </div>
     );
@@ -33,7 +33,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#fcfcfd] dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100">
+    <div className="min-h-screen flex bg-[#0B0D12] text-[#F5F7FA]">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar />

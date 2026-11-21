@@ -246,33 +246,33 @@ export default function SocialVideoAnalyzerPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-slide-up pb-16">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2.5 rounded-2xl bg-pink-500/10 text-pink-500 border border-pink-500/20">
-              <Film className="w-6 h-6" />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-violet-500/10 text-violet-400 border border-violet-500/20 shadow-[0_0_15px_rgba(139,92,246,0.15)]">
+              <Film className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5F7FA]">
                   Social Video Analyzer
                 </h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-500/10 text-pink-500 border border-pink-500/20">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-500/10 text-violet-400 border border-violet-500/20">
                   Reels & Shorts AI
                 </span>
               </div>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#9CA3AF] mt-0.5">
                 Understand any Instagram Reel, YouTube Short, or uploaded MP4 video without watching the entire clip.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Generate Everything & Export Actions */}
+        {/* Generate Everything Action */}
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleGenerateEverything}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 hover:opacity-90 text-white text-xs font-semibold shadow-glow transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-[0_0_20px_rgba(139,92,246,0.35)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
             <span>GENERATE EVERYTHING</span>
@@ -281,7 +281,7 @@ export default function SocialVideoAnalyzerPage() {
       </div>
 
       {/* URL & Upload Input Bar */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
+      <div className="p-5 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-3">
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <div className="flex-1 w-full relative">
             <input
@@ -289,7 +289,7 @@ export default function SocialVideoAnalyzerPage() {
               placeholder="Paste Instagram Reel or YouTube Shorts URL (e.g. instagram.com/reel/...)"
               value={inputUrl}
               onChange={(e) => setInputUrl(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#141821] border border-white/[0.08] text-xs text-[#F5F7FA] placeholder:text-[#9CA3AF] focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 hover:border-white/[0.15] transition-all"
             />
           </div>
 
@@ -297,7 +297,7 @@ export default function SocialVideoAnalyzerPage() {
             <select
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
-              className="px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer"
+              className="px-3 py-2.5 rounded-xl bg-[#141821] border border-white/[0.08] text-xs text-[#F5F7FA] focus:outline-none focus:border-violet-500/50 cursor-pointer hover:border-white/[0.15] transition-all"
             >
               <option value="auto">Auto-Detect Platform</option>
               <option value="instagram">Instagram Reel</option>
@@ -308,7 +308,7 @@ export default function SocialVideoAnalyzerPage() {
             <button
               onClick={handleAnalyze}
               disabled={isAnalyzing || isUploading}
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-semibold shadow-glow transition-all whitespace-nowrap disabled:opacity-50"
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_rgba(139,92,246,0.45)] transition-all whitespace-nowrap disabled:opacity-50 cursor-pointer"
             >
               {isAnalyzing ? (
                 <>
@@ -334,17 +334,17 @@ export default function SocialVideoAnalyzerPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading || isAnalyzing}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#141821] hover:bg-[#1A202C] border border-white/[0.08] hover:border-violet-500/30 text-[#F5F7FA] text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-50 cursor-pointer"
               title="Upload MP4 directly when Reels or Shorts URLs have restricted access"
             >
               {isUploading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-violet-400" />
                   <span>Processing...</span>
                 </>
               ) : (
                 <>
-                  <Upload className="w-4 h-4" />
+                  <Upload className="w-4 h-4 text-violet-400" />
                   <span>Upload Video</span>
                 </>
               )}
@@ -352,16 +352,16 @@ export default function SocialVideoAnalyzerPage() {
           </div>
         </div>
 
-        {/* Direct Upload Notice (Part 3 requirement) */}
-        <p className="text-[11px] text-zinc-400">
-          💡 <strong>Tip:</strong> If an Instagram Reel has private or login-restricted platform controls, use <strong>Upload Video</strong> to transcribe with Groq Whisper and extract viral topics directly.
+        {/* Direct Upload Notice */}
+        <p className="text-[11px] text-[#9CA3AF]">
+          💡 <strong className="text-[#F5F7FA]">Tip:</strong> If an Instagram Reel has private or login-restricted platform controls, use <strong className="text-[#F5F7FA]">Upload Video</strong> to transcribe with Groq Whisper and extract viral topics directly.
         </p>
       </div>
 
       {/* Active Video Meta Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-800 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#171C26] via-[#141821] to-[#0B0D12] border border-white/[0.07] shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="w-16 h-20 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden relative group">
+          <div className="w-16 h-20 rounded-xl bg-[#141821] border border-white/[0.08] flex items-center justify-center shrink-0 overflow-hidden relative group">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={analysis.thumbnail_url}
@@ -375,17 +375,17 @@ export default function SocialVideoAnalyzerPage() {
 
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-pink-500/10 text-pink-400 border border-pink-500/20">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-violet-500/10 text-violet-400 border border-violet-500/20">
                 {analysis.platform}
               </span>
-              <span className="text-xs text-zinc-400 font-mono">
+              <span className="text-xs text-cyan-400 font-mono">
                 Duration: {analysis.duration}
               </span>
             </div>
-            <h2 className="text-base font-bold text-white line-clamp-1">
+            <h2 className="text-base font-bold text-[#F5F7FA] line-clamp-1">
               {analysis.title}
             </h2>
-            <p className="text-xs text-zinc-400 line-clamp-1 italic">
+            <p className="text-xs text-[#9CA3AF] line-clamp-1 italic">
               &ldquo;{analysis.main_message}&rdquo;
             </p>
           </div>
@@ -393,7 +393,7 @@ export default function SocialVideoAnalyzerPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap gap-1 p-1 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <div className="flex flex-wrap gap-1 p-1 rounded-2xl bg-[#141821] border border-white/[0.06]">
         {[
           { id: "overview", label: "Overview & Purpose", icon: Target },
           { id: "summaries", label: "3-Tier Summaries", icon: FileText },
@@ -409,10 +409,10 @@ export default function SocialVideoAnalyzerPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 isActive
-                  ? "bg-white dark:bg-zinc-800 text-pink-500 shadow-sm"
-                  : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+                  ? "bg-violet-500/15 text-violet-300 border border-violet-500/30 shadow-sm"
+                  : "text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#171C26]/80"
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -425,35 +425,35 @@ export default function SocialVideoAnalyzerPage() {
       {/* TAB CONTENT 1: OVERVIEW */}
       {activeTab === "overview" && (
         <div className="space-y-5">
-          <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-pink-500">
+          <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
               What is this video about? (3–5 Sentences)
             </span>
-            <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+            <p className="text-sm text-[#F5F7FA] leading-relaxed">
               {analysis.explanation_3_5_sentences}
             </p>
 
-            <div className="p-4 rounded-xl bg-pink-500/5 border border-pink-500/20">
-              <span className="text-xs font-bold text-pink-400 uppercase tracking-wide block mb-1">
+            <div className="p-4 rounded-xl bg-[#141821] border border-violet-500/20">
+              <span className="text-xs font-bold text-violet-400 uppercase tracking-wide block mb-1">
                 Creator&apos;s Main Message
               </span>
-              <p className="text-xs text-zinc-300 font-medium leading-relaxed">
+              <p className="text-xs text-[#F5F7FA] font-medium leading-relaxed">
                 {analysis.main_message}
               </p>
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+          <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF]">
               Important Discussion Points
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {analysis.discussion_points.map((pt, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 flex items-start gap-2 text-xs text-zinc-700 dark:text-zinc-300"
+                  className="p-3.5 rounded-xl bg-[#141821] border border-white/[0.05] flex items-start gap-2.5 text-xs text-[#F5F7FA]"
                 >
-                  <span className="text-pink-500 font-bold">•</span>
+                  <span className="text-cyan-400 font-bold">•</span>
                   <span>{pt}</span>
                 </div>
               ))}
@@ -464,35 +464,35 @@ export default function SocialVideoAnalyzerPage() {
 
       {/* TAB CONTENT 2: SUMMARIES */}
       {activeTab === "summaries" && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+        <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSummaryMode("30s")}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   summaryMode === "30s"
-                    ? "bg-pink-600 text-white"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                    ? "bg-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                    : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                 }`}
               >
                 30-Second Summary
               </button>
               <button
                 onClick={() => setSummaryMode("detailed")}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   summaryMode === "detailed"
-                    ? "bg-pink-600 text-white"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                    ? "bg-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                    : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                 }`}
               >
                 Detailed Breakdown
               </button>
               <button
                 onClick={() => setSummaryMode("beginner")}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   summaryMode === "beginner"
-                    ? "bg-pink-600 text-white"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                    ? "bg-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                    : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                 }`}
               >
                 Beginner-Friendly Explanation
@@ -510,18 +510,18 @@ export default function SocialVideoAnalyzerPage() {
                   "summary-copy"
                 )
               }
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white"
+              className="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] transition-colors"
               title="Copy Summary"
             >
               {copiedKey === "summary-copy" ? (
-                <Check className="w-4 h-4 text-emerald-500" />
+                <Check className="w-4 h-4 text-emerald-400" />
               ) : (
                 <Copy className="w-4 h-4" />
               )}
             </button>
           </div>
 
-          <div className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
+          <div className="text-sm text-[#F5F7FA] leading-relaxed whitespace-pre-line">
             {summaryMode === "30s" && analysis.summary_30s}
             {summaryMode === "detailed" && analysis.summary_detailed}
             {summaryMode === "beginner" && analysis.summary_beginner}
@@ -532,32 +532,32 @@ export default function SocialVideoAnalyzerPage() {
       {/* TAB CONTENT 3: TOPICS & TAKEAWAYS */}
       {activeTab === "topics" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-pink-500">
+          <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
               Main Topics Discussed
             </span>
             <div className="space-y-2">
               {analysis.main_topics.map((tp, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 flex items-center gap-2 text-xs font-semibold text-zinc-800 dark:text-zinc-200"
+                  className="p-3.5 rounded-xl bg-[#141821] border border-white/[0.05] flex items-center gap-2.5 text-xs font-semibold text-[#F5F7FA]"
                 >
-                  <Bookmark className="w-4 h-4 text-pink-500" />
+                  <Bookmark className="w-4 h-4 text-violet-400" />
                   <span>{tp}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">
+          <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
               Actionable Key Takeaways
             </span>
             <div className="space-y-2">
               {analysis.key_takeaways.map((tk, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 flex items-start gap-2 text-xs text-zinc-700 dark:text-zinc-300"
+                  className="p-3.5 rounded-xl bg-[#141821] border border-white/[0.05] flex items-start gap-2.5 text-xs text-[#F5F7FA]"
                 >
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   <span>{tk}</span>
@@ -574,27 +574,27 @@ export default function SocialVideoAnalyzerPage() {
           {analysis.spoken_quotes.map((q, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              className="p-4 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/10 text-violet-400 border border-violet-500/20">
                     Timestamp: {q.timestamp}
                   </span>
-                  <span className="text-xs text-zinc-400">{q.speaker}</span>
+                  <span className="text-xs text-cyan-400 font-medium">{q.speaker}</span>
                 </div>
-                <p className="text-sm font-semibold text-zinc-900 dark:text-white italic">
+                <p className="text-sm font-semibold text-[#F5F7FA] italic">
                   &ldquo;{q.quote}&rdquo;
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">{q.context}</p>
+                <p className="text-xs text-[#9CA3AF]">{q.context}</p>
               </div>
 
               <button
                 onClick={() => handleCopy(q.quote, `q-${idx}`)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-white shrink-0"
+                className="p-2 rounded-xl bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06] hover:border-violet-500/30 shrink-0 transition-colors"
               >
                 {copiedKey === `q-${idx}` ? (
-                  <Check className="w-4 h-4 text-emerald-500" />
+                  <Check className="w-4 h-4 text-emerald-400" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
@@ -607,31 +607,31 @@ export default function SocialVideoAnalyzerPage() {
       {/* TAB CONTENT 5: VISUAL INSIGHTS & EDUCATIONAL TERMS */}
       {activeTab === "visual" && (
         <div className="space-y-6">
-          {/* Visual Frame Insights (Part 6) */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-pink-500">
+          {/* Visual Frame Insights */}
+          <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">
               Visual Frame Intelligence (FFmpeg Scene Extraction)
             </span>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {analysis.visual_insights.map((v, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2"
+                  className="p-4 rounded-xl bg-[#141821] border border-white/[0.06] space-y-2.5"
                 >
-                  <div className="flex items-center justify-between text-xs text-zinc-400 font-mono">
-                    <span>Frame [{v.timestamp}]</span>
-                    <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-[10px]">
+                  <div className="flex items-center justify-between text-xs text-[#9CA3AF] font-mono">
+                    <span className="text-violet-400">Frame [{v.timestamp}]</span>
+                    <span className="px-2 py-0.5 rounded bg-[#171C26] border border-white/[0.06] text-[10px]">
                       {v.scene_type}
                     </span>
                   </div>
-                  <div className="p-2 rounded bg-black/60 border border-zinc-800 text-xs font-bold text-yellow-400 text-center">
+                  <div className="p-2.5 rounded-lg bg-[#0B0D12] border border-white/[0.06] text-xs font-bold text-amber-300 text-center">
                     OCR: &ldquo;{v.on_screen_text}&rdquo;
                   </div>
                   <div className="flex flex-wrap gap-1 pt-1">
                     {v.detected_elements.map((el, eIdx) => (
                       <span
                         key={eIdx}
-                        className="px-2 py-0.5 rounded text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-400"
+                        className="px-2 py-0.5 rounded text-[10px] bg-[#171C26] text-[#9CA3AF] border border-white/[0.04]"
                       >
                         {el}
                       </span>
@@ -642,24 +642,24 @@ export default function SocialVideoAnalyzerPage() {
             </div>
           </div>
 
-          {/* Educational Terms (Part 4) */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-purple-400">
+          {/* Educational Terms */}
+          <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
               Educational Insights & Difficult Terms
             </span>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {analysis.educational_terms.map((term, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 space-y-2"
+                  className="p-4 rounded-xl bg-[#141821] border border-violet-500/20 space-y-2"
                 >
-                  <h4 className="text-xs font-bold text-purple-300 uppercase">
+                  <h4 className="text-xs font-bold text-violet-300 uppercase tracking-wide">
                     {term.term}
                   </h4>
-                  <p className="text-xs text-zinc-300 leading-relaxed">
+                  <p className="text-xs text-[#F5F7FA] leading-relaxed">
                     {term.simple_explanation}
                   </p>
-                  <p className="text-[11px] text-zinc-400 italic">
+                  <p className="text-[11px] text-[#9CA3AF] italic">
                     Example: {term.example}
                   </p>
                 </div>
@@ -673,7 +673,7 @@ export default function SocialVideoAnalyzerPage() {
       {activeTab === "repurpose" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF]">
               10 Generated Social Formats (Ready to Post)
             </span>
           </div>
@@ -682,25 +682,25 @@ export default function SocialVideoAnalyzerPage() {
             {Object.entries(analysis.repurposed_content).map(([key, val]) => (
               <div
                 key={key}
-                className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between space-y-3"
+                className="p-5 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm flex flex-col justify-between space-y-3 hover:border-violet-500/30 transition-all"
               >
                 <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-violet-500/10 text-violet-400 border border-violet-500/20">
                     {key.replace(/_/g, " ")}
                   </span>
                   <button
                     onClick={() => handleCopy(val, key)}
-                    className="p-1 rounded text-zinc-400 hover:text-white"
+                    className="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#141821] transition-colors"
                     title="Copy Content"
                   >
                     {copiedKey === key ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
                   </button>
                 </div>
-                <p className="text-xs text-zinc-700 dark:text-zinc-300 whitespace-pre-line leading-relaxed">
+                <p className="text-xs text-[#F5F7FA] whitespace-pre-line leading-relaxed">
                   {val}
                 </p>
               </div>
@@ -709,13 +709,13 @@ export default function SocialVideoAnalyzerPage() {
         </div>
       )}
 
-      {/* TAB CONTENT 7: AI VIDEO CHAT (Part 7) */}
+      {/* TAB CONTENT 7: AI VIDEO CHAT */}
       {activeTab === "chat" && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="p-6 rounded-2xl bg-[#171C26] border border-white/[0.07] shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-2">
-              <Languages className="w-4 h-4 text-pink-500" />
-              <span className="text-xs font-bold text-zinc-400">Response Language:</span>
+              <Languages className="w-4 h-4 text-violet-400" />
+              <span className="text-xs font-bold text-[#9CA3AF]">Response Language:</span>
               <div className="flex items-center gap-1">
                 {(["english", "hindi", "hinglish"] as const).map((lang) => (
                   <button
@@ -723,8 +723,8 @@ export default function SocialVideoAnalyzerPage() {
                     onClick={() => setChatLanguage(lang)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
                       chatLanguage === lang
-                        ? "bg-pink-600 text-white"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                        ? "bg-violet-600 text-white shadow-sm"
+                        : "bg-[#141821] text-[#9CA3AF] hover:text-[#F5F7FA] border border-white/[0.06]"
                     }`}
                   >
                     {lang}
@@ -732,7 +732,7 @@ export default function SocialVideoAnalyzerPage() {
                 ))}
               </div>
             </div>
-            <span className="text-[11px] text-zinc-500">Grounded in video transcript</span>
+            <span className="text-[11px] text-[#9CA3AF]">Grounded in video transcript</span>
           </div>
 
           {/* Chat Messages */}
@@ -745,13 +745,13 @@ export default function SocialVideoAnalyzerPage() {
                 <div
                   className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed ${
                     msg.sender === "user"
-                      ? "bg-pink-600 text-white rounded-br-none"
-                      : "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-bl-none border border-zinc-200 dark:border-zinc-700"
+                      ? "bg-violet-600 text-white rounded-br-none shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+                      : "bg-[#141821] text-[#F5F7FA] rounded-bl-none border border-white/[0.06]"
                   }`}
                 >
                   <p>{msg.text}</p>
                   {msg.timestamp && (
-                    <span className="inline-block mt-2 px-1.5 py-0.5 rounded text-[10px] font-mono bg-pink-500/20 text-pink-300">
+                    <span className="inline-block mt-2 px-1.5 py-0.5 rounded text-[10px] font-mono bg-violet-500/20 text-violet-300 border border-violet-500/30">
                       Cited: [{msg.timestamp}]
                     </span>
                   )}
@@ -760,8 +760,8 @@ export default function SocialVideoAnalyzerPage() {
             ))}
             {isChatLoading && (
               <div className="flex justify-start">
-                <div className="p-3 rounded-2xl bg-zinc-800 text-zinc-400 text-xs flex items-center gap-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-pink-500" />
+                <div className="p-3 rounded-2xl bg-[#141821] text-[#9CA3AF] text-xs flex items-center gap-2 border border-white/[0.06]">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
                   <span>Thinking in {chatLanguage}...</span>
                 </div>
               </div>
@@ -769,19 +769,19 @@ export default function SocialVideoAnalyzerPage() {
           </div>
 
           {/* Chat Input */}
-          <div className="flex items-center gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center gap-2 pt-2 border-t border-white/[0.06]">
             <input
               type="text"
               placeholder={`Ask anything about this video (in ${chatLanguage})...`}
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              className="flex-1 px-4 py-2.5 rounded-xl bg-[#141821] border border-white/[0.08] text-xs text-[#F5F7FA] placeholder:text-[#9CA3AF] focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30"
             />
             <button
               onClick={handleSendMessage}
               disabled={isChatLoading || !chatInput.trim()}
-              className="p-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white transition-all disabled:opacity-50"
+              className="p-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white transition-all disabled:opacity-50 cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.3)]"
             >
               <Send className="w-4 h-4" />
             </button>
