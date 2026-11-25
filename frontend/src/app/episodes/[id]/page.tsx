@@ -7,7 +7,9 @@ import {
   fetchEpisode, 
   fetchTranscript, 
   fetchClips, 
-  fetchGeneratedContent 
+  fetchGeneratedContent,
+  fetchConversationalOverview,
+  fetchPodcastBrief
 } from "@/lib/api";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { AgentStepper } from "@/components/episodes/AgentStepper";
@@ -15,6 +17,11 @@ import { AudioPlayer } from "@/components/episodes/AudioPlayer";
 import { TranscriptViewer } from "@/components/episodes/TranscriptViewer";
 import { ClipCard } from "@/components/episodes/ClipCard";
 import { ContentTab } from "@/components/episodes/ContentTab";
+import { EpisodeOverviewSection } from "@/components/episodes/EpisodeOverviewSection";
+import { PodcastBriefSection } from "@/components/episodes/PodcastBriefSection";
+import { AudienceModeSection } from "@/components/episodes/AudienceModeSection";
+import { VocabularySection } from "@/components/episodes/VocabularySection";
+import { SmartTimelineSection } from "@/components/episodes/SmartTimelineSection";
 import { parseTimestampToSeconds, formatDate } from "@/lib/utils";
 import { 
   Radio, 
@@ -24,7 +31,12 @@ import {
   Sparkles, 
   ArrowLeft, 
   RefreshCw, 
-  CheckCircle2 
+  CheckCircle2,
+  Headphones,
+  FileText,
+  Users,
+  BookMarked,
+  GitCommit
 } from "lucide-react";
 import Link from "next/link";
 
@@ -34,7 +46,9 @@ export default function EpisodeDetailPage() {
   const id = (params?.id as string) || "ep_01";
 
   const [currentTime, setCurrentTime] = useState<number>(0);
-  const [activeStudioTab, setActiveStudioTab] = useState<"clips" | "content">("clips");
+  const [activeStudioTab, setActiveStudioTab] = useState<
+    "overview" | "brief" | "audience" | "vocabulary" | "timeline" | "clips" | "content"
+  >("overview");
 
   // Real-time polling every 3000ms until status is ready_for_review or published
   const { 
@@ -69,6 +83,18 @@ export default function EpisodeDetailPage() {
   const { data: content = [] } = useQuery({
     queryKey: ["content", id],
     queryFn: () => fetchGeneratedContent(id),
+    enabled: !!episode,
+  });
+
+  const { data: overview } = useQuery({
+    queryKey: ["conversationalOverview", id],
+    queryFn: () => fetchConversationalOverview(id),
+    enabled: !!episode,
+  });
+
+  const { data: brief } = useQuery({
+    queryKey: ["podcastBrief", id],
+    queryFn: () => fetchPodcastBrief(id),
     enabled: !!episode,
   });
 
@@ -212,42 +238,130 @@ export default function EpisodeDetailPage() {
 
         {/* Right Column: Repurposed Content Studio (7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
-          {/* Main Repurpose Mode Switcher */}
-          <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-2 flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setActiveStudioTab("clips")}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  activeStudioTab === "clips"
-                    ? "bg-brand-600 text-white shadow-sm"
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                }`}
-              >
-                <Scissors className="w-3.5 h-3.5" />
-                <span>Viral Clips ({clips.length})</span>
-              </button>
+          {/* Main Repurpose & Intelligence Mode Switcher */}
+          <div className="bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-1.5 flex flex-wrap items-center gap-1 shadow-sm">
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("overview")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "overview"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <Headphones className="w-3.5 h-3.5" />
+              <span>Listen Overview</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => setActiveStudioTab("content")}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  activeStudioTab === "content"
-                    ? "bg-brand-600 text-white shadow-sm"
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Multi-Format Text ({content.length})</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("brief")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "brief"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Podcast Brief</span>
+            </button>
 
-            <span className="text-[11px] text-zinc-400 pr-3 hidden sm:inline">
-              Click timestamps to seek audio
-            </span>
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("audience")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "audience"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Audience Mode</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("vocabulary")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "vocabulary"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <BookMarked className="w-3.5 h-3.5" />
+              <span>Vocabulary</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("timeline")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "timeline"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <GitCommit className="w-3.5 h-3.5" />
+              <span>Smart Timeline</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("clips")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "clips"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <Scissors className="w-3.5 h-3.5" />
+              <span>Viral Clips ({clips.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveStudioTab("content")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeStudioTab === "content"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Multi-Format ({content.length})</span>
+            </button>
           </div>
 
-          {/* Tab 1: Clips List with "Why this was picked" justification */}
+          {/* Tab 1: Listen to Episode Overview (Phase 6 - High Priority) */}
+          {activeStudioTab === "overview" && overview && (
+            <EpisodeOverviewSection overview={overview} />
+          )}
+
+          {/* Tab 2: Podcast Brief (Phase 8) */}
+          {activeStudioTab === "brief" && brief && (
+            <PodcastBriefSection brief={brief} onSeek={handleSeek} />
+          )}
+
+          {/* Tab 3: Audience Mode (Phase 9) */}
+          {activeStudioTab === "audience" && (
+            <AudienceModeSection episodeId={id} />
+          )}
+
+          {/* Tab 4: AI Vocabulary Extractor (Phase 10) */}
+          {activeStudioTab === "vocabulary" && (
+            <VocabularySection episodeId={id} onSeek={handleSeek} />
+          )}
+
+          {/* Tab 5: Smart Timeline (Phase 11) */}
+          {activeStudioTab === "timeline" && (
+            <SmartTimelineSection
+              episodeId={id}
+              currentTime={currentTime}
+              onSeek={handleSeek}
+            />
+          )}
+
+          {/* Tab 6: Clips List with "Why this was picked" justification */}
           {activeStudioTab === "clips" && (
             <div className="space-y-4">
               {clips.length === 0 ? (
@@ -266,7 +380,7 @@ export default function EpisodeDetailPage() {
             </div>
           )}
 
-          {/* Tab 2: Repurposed Content (Blog, Social, Show Notes) + Export to .md & .txt */}
+          {/* Tab 7: Repurposed Content (Blog, Social, Show Notes) */}
           {activeStudioTab === "content" && (
             <ContentTab
               contentItems={content}

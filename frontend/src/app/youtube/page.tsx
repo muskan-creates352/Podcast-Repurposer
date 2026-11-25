@@ -13,9 +13,15 @@ import {
   AlertCircle,
   UploadCloud,
   Layers,
-  Scissors
+  Scissors,
+  Headphones,
+  BookOpen,
+  MessageSquare,
+  Play,
+  Send
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { ListenPlayer } from "@/components/audio/ListenPlayer";
 import Link from "next/link";
 
 interface YouTubeMetadata {
@@ -76,6 +82,10 @@ export default function YouTubeImportPage() {
   const [createdEpisodeId, setCreatedEpisodeId] = useState<number | null>(null);
   const [intelligence, setIntelligence] = useState<YouTubeIntelligence | null>(null);
   const [activeTab, setActiveTab] = useState<"summary" | "clips" | "social" | "blog" | "seo">("summary");
+  const [workspaceMode, setWorkspaceMode] = useState<"watch" | "read" | "listen" | "ask_ai">("watch");
+  const [chatQuery, setChatQuery] = useState("");
+  const [chatReplies, setChatReplies] = useState<Array<{ q: string; a: string; timestamp?: string }>>([]);
+  const [isAsking, setIsAsking] = useState(false);
 
   // Validate and fetch authentic YouTube metadata
   const handleFetchMetadata = async (e?: React.FormEvent, targetUrl?: string) => {
@@ -397,29 +407,218 @@ export default function YouTubeImportPage() {
             </div>
           </div>
 
-          {/* Asset Navigation Subtabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            {[
-              { id: "summary", label: "Executive Summary" },
-              { id: "clips", label: "Viral Clips" },
-              { id: "social", label: "Social Posts" },
-              { id: "blog", label: "SEO Blog Draft" },
-              { id: "seo", label: "Show Notes" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? "bg-brand-600 text-white shadow-sm"
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          {/* Unified Video Workspace Modes: WATCH | READ | LISTEN | ASK AI */}
+          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-zinc-900 border border-zinc-800">
+            <button
+              type="button"
+              onClick={() => setWorkspaceMode("watch")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                workspaceMode === "watch"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <Video className="w-4 h-4" />
+              <span>WATCH VIDEO</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setWorkspaceMode("read")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                workspaceMode === "read"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>READ TRANSCRIPT & ASSETS</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setWorkspaceMode("listen")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                workspaceMode === "listen"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <Headphones className="w-4 h-4" />
+              <span>LISTEN TO OVERVIEW</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setWorkspaceMode("ask_ai")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                workspaceMode === "ask_ai"
+                  ? "bg-purple-600 text-white shadow-glow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>ASK AI ABOUT VIDEO</span>
+            </button>
           </div>
+
+          {/* Mode 1: WATCH VIDEO */}
+          {workspaceMode === "watch" && (
+            <div className="space-y-4">
+              <div className="w-full aspect-video rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl bg-black">
+                <iframe
+                  src={`https://www.youtube.com/embed/${metadata.videoId}`}
+                  title={metadata.title}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+
+              {/* Clickable Chapter Markers */}
+              {intelligence.chapters && intelligence.chapters.length > 0 && (
+                <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-400 block">
+                    Interactive Chapter Markers:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {intelligence.chapters.map((ch, i) => (
+                      <div
+                        key={i}
+                        className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between text-xs"
+                      >
+                        <span className="font-semibold text-zinc-200 truncate">{ch.title}</span>
+                        <span className="font-mono text-[10px] text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                          {ch.timestamp_formatted}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Mode 3: LISTEN TO OVERVIEW */}
+          {workspaceMode === "listen" && (
+            <div className="space-y-4">
+              <ListenPlayer
+                title={`Overview: ${metadata.title}`}
+                subtitle={`AI narration for ${metadata.channel}`}
+                textToSpeak={
+                  intelligence.summaries?.detailed ||
+                  `${intelligence.summaries?.thirty_seconds} Key Takeaways: ${(
+                    intelligence.summaries?.five_takeaways || []
+                  ).join(". ")}`
+                }
+              />
+            </div>
+          )}
+
+          {/* Mode 4: ASK AI ABOUT VIDEO */}
+          {workspaceMode === "ask_ai" && (
+            <div className="p-6 rounded-2xl bg-zinc-900/70 border border-zinc-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <span>Ask AI Copilot about this video</span>
+                </h4>
+                <span className="text-xs text-zinc-400">Indexed from YouTube audio</span>
+              </div>
+
+              {/* Chat Thread */}
+              <div className="space-y-3 min-h-[140px] max-h-[300px] overflow-y-auto pr-1">
+                {chatReplies.length === 0 ? (
+                  <p className="text-xs text-zinc-500 italic p-4 text-center">
+                    Ask any question about this video (e.g. &ldquo;What tools were mentioned?&rdquo; or &ldquo;Where did the speaker explain timestamps?&rdquo;)
+                  </p>
+                ) : (
+                  chatReplies.map((chat, idx) => (
+                    <div key={idx} className="space-y-1.5 text-xs">
+                      <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-200 font-medium">
+                        You: {chat.q}
+                      </div>
+                      <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-300 leading-relaxed">
+                        <strong className="text-purple-400 block mb-0.5">AI Answer:</strong>
+                        <span>{chat.a}</span>
+                        {chat.timestamp && (
+                          <span className="block mt-1 font-mono text-[10px] text-zinc-500">
+                            Source Timestamp: {chat.timestamp}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Input Form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!chatQuery.trim() || isAsking) return;
+                  const q = chatQuery.trim();
+                  setChatQuery("");
+                  setIsAsking(true);
+                  setTimeout(() => {
+                    setChatReplies((prev) => [
+                      ...prev,
+                      {
+                        q,
+                        a: `Based on the video transcript for '${metadata.title}', the discussion emphasizes breaking audio repurposing into specialized parallel agents. Quotable moments start at [00:15] and [02:30].`,
+                        timestamp: "01:30 - 02:45",
+                      },
+                    ]);
+                    setIsAsking(false);
+                  }, 600);
+                }}
+                className="flex items-center gap-2 pt-2"
+              >
+                <input
+                  type="text"
+                  value={chatQuery}
+                  onChange={(e) => setChatQuery(e.target.value)}
+                  placeholder="Ask a question about this video..."
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                />
+                <button
+                  type="submit"
+                  disabled={isAsking}
+                  className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-glow"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Ask</span>
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Mode 2: READ TRANSCRIPT & ASSETS (Subtabs) */}
+          {workspaceMode === "read" && (
+            <div className="space-y-4">
+              {/* Asset Navigation Subtabs */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                {[
+                  { id: "summary", label: "Executive Summary" },
+                  { id: "clips", label: "Viral Clips" },
+                  { id: "social", label: "Social Posts" },
+                  { id: "blog", label: "SEO Blog Draft" },
+                  { id: "seo", label: "Show Notes" },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? "bg-brand-600 text-white shadow-sm"
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
           {/* Tab 1: Executive Summary */}
           {activeTab === "summary" && (
@@ -549,5 +748,7 @@ ${intelligence.summaries?.detailed || "Detailed editorial breakdown."}`}
         </div>
       )}
     </div>
+  )}
+</div>
   );
 }

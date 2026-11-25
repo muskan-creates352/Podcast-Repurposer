@@ -562,3 +562,129 @@ export async function refineContentApi(
   return res.json();
 }
 
+// -------------------------------------------------------------
+// Episode Intelligence & Listen Mode APIs
+// -------------------------------------------------------------
+export interface ConversationalOverview {
+  episode_id: number;
+  episode_title: string;
+  conversational_script: string;
+  what_episode_is_about: string;
+  topics_discussed: string[];
+  speaker_explanations: string[];
+  important_arguments: string[];
+  examples_and_stories: string[];
+  key_insights: string[];
+  conclusions: string;
+  most_useful_takeaway: string;
+  estimated_listen_duration_seconds: number;
+}
+
+export async function fetchConversationalOverview(episodeId: string | number): Promise<ConversationalOverview> {
+  const cleanId = String(episodeId).replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanId}/conversational-overview`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch conversational overview");
+  }
+  return res.json();
+}
+
+export interface PodcastBrief {
+  episode_id: number;
+  episode_title: string;
+  main_topic: string;
+  short_summary: string;
+  key_takeaways: string[];
+  topics_discussed: string[];
+  actionable_insights: string[];
+  important_timestamps: { timestamp: string; topic: string }[];
+  key_quotes: { speaker: string; quote: string; timestamp: string }[];
+  mentioned_tools_and_resources: string[];
+  conclusion: string;
+}
+
+export async function fetchPodcastBrief(episodeId: string | number): Promise<PodcastBrief> {
+  const cleanId = String(episodeId).replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanId}/brief`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch podcast brief");
+  }
+  return res.json();
+}
+
+export interface AudienceModeData {
+  episode_id: number;
+  mode: string;
+  title: string;
+  explanation: string;
+  key_concepts: string[];
+  practical_implication: string;
+}
+
+export async function fetchAudienceMode(episodeId: string | number, mode: string = "beginner"): Promise<AudienceModeData> {
+  const cleanId = String(episodeId).replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanId}/audience-mode?mode=${encodeURIComponent(mode)}`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch audience mode data");
+  }
+  return res.json();
+}
+
+export interface VocabularyTerm {
+  term: string;
+  simple_meaning: string;
+  contextual_explanation: string;
+  example: string;
+  timestamp?: string;
+  start_seconds?: number;
+}
+
+export interface VocabularyData {
+  episode_id: number;
+  total_terms: number;
+  terms: VocabularyTerm[];
+}
+
+export async function fetchPodcastVocabulary(episodeId: string | number): Promise<VocabularyData> {
+  const cleanId = String(episodeId).replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanId}/vocabulary`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch podcast vocabulary");
+  }
+  return res.json();
+}
+
+export interface TimelineSegment {
+  category: string;
+  title: string;
+  timestamp: string;
+  start_seconds: number;
+  end_seconds: number;
+  short_explanation: string;
+}
+
+export interface TimelineData {
+  episode_id: number;
+  segments: TimelineSegment[];
+}
+
+export async function fetchSmartTimeline(episodeId: string | number): Promise<TimelineData> {
+  const cleanId = String(episodeId).replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanId}/timeline`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch smart timeline");
+  }
+  return res.json();
+}
+
+
