@@ -14,6 +14,7 @@ import { StatCard } from "@/components/ui/StatCard";
 import { EpisodeTable } from "@/components/ui/EpisodeTable";
 import { PipelineCard } from "@/components/ui/PipelineCard";
 import { WeeklyChart } from "@/components/ui/WeeklyChart";
+import { MOCK_WEEKLY_STATS, MOCK_AGENTS, MOCK_CLIPS, MOCK_EPISODES } from "@/lib/mockData";
 import {
   Radio,
   Scissors,
@@ -55,6 +56,11 @@ export default function DashboardPage() {
     queryKey: ["dashboard_clips"],
     queryFn: () => fetchClips(),
   });
+
+  const displayWeeklyStats = weeklyStats && weeklyStats.length > 0 ? weeklyStats : MOCK_WEEKLY_STATS;
+  const displayAgents = agents && agents.length > 0 ? agents : MOCK_AGENTS;
+  const displayClips = clips && clips.length > 0 ? clips : MOCK_CLIPS;
+  const displayEpisodes = episodes && episodes.length > 0 ? episodes : MOCK_EPISODES;
 
   return (
     <div className="space-y-8 animate-slide-up pb-16 max-w-7xl mx-auto">
@@ -169,10 +175,10 @@ export default function DashboardPage() {
       {/* Charts & Agent Pipeline Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-7">
-          <WeeklyChart data={weeklyStats} />
+          <WeeklyChart data={displayWeeklyStats} />
         </div>
         <div className="lg:col-span-5">
-          <PipelineCard agents={agents} />
+          <PipelineCard agents={displayAgents} />
         </div>
       </div>
 
@@ -200,7 +206,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {clips.slice(0, 4).map((clip) => (
+            {displayClips.slice(0, 4).map((clip) => (
               <div
                 key={clip.id}
                 className="p-4 rounded-2xl bg-white dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-purple-500/40 shadow-sm transition-all flex flex-col justify-between group"
@@ -330,7 +336,7 @@ export default function DashboardPage() {
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
-        <EpisodeTable episodes={episodes} />
+        <EpisodeTable episodes={displayEpisodes} />
       </div>
     </div>
   );

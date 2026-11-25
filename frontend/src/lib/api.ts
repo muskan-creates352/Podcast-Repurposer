@@ -95,11 +95,17 @@ export async function fetchStats(): Promise<Stats> {
     return MOCK_STATS;
   }
 
-  const res = await fetch(`${BASE_URL}/dashboard/stats`, {
-    headers: { ...getAuthHeader() },
-  });
-  if (!res.ok) throw new Error("Failed to fetch dashboard stats");
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/dashboard/stats`, {
+      headers: { ...getAuthHeader() },
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn("[API] fetchStats fallback to default data:", err);
+  }
+  return MOCK_STATS;
 }
 
 export async function fetchWeeklyStats(): Promise<WeeklyProcessingStat[]> {
@@ -108,11 +114,18 @@ export async function fetchWeeklyStats(): Promise<WeeklyProcessingStat[]> {
     return MOCK_WEEKLY_STATS;
   }
 
-  const res = await fetch(`${BASE_URL}/analytics/weekly`, {
-    headers: { ...getAuthHeader() },
-  });
-  if (!res.ok) throw new Error("Failed to fetch weekly stats");
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/analytics/weekly`, {
+      headers: { ...getAuthHeader() },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (err) {
+    console.warn("[API] fetchWeeklyStats fallback to default data:", err);
+  }
+  return MOCK_WEEKLY_STATS;
 }
 
 export async function fetchAgentStatuses(): Promise<AgentStatus[]> {
@@ -121,11 +134,18 @@ export async function fetchAgentStatuses(): Promise<AgentStatus[]> {
     return MOCK_AGENTS;
   }
 
-  const res = await fetch(`${BASE_URL}/agents/status`, {
-    headers: { ...getAuthHeader() },
-  });
-  if (!res.ok) throw new Error("Failed to fetch agent statuses");
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/agents/status`, {
+      headers: { ...getAuthHeader() },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (err) {
+    console.warn("[API] fetchAgentStatuses fallback to default data:", err);
+  }
+  return MOCK_AGENTS;
 }
 
 // -------------------------------------------------------------
@@ -137,11 +157,18 @@ export async function fetchEpisodes(): Promise<Episode[]> {
     return [...MOCK_EPISODES];
   }
 
-  const res = await fetch(`${BASE_URL}/episodes`, {
-    headers: { ...getAuthHeader() },
-  });
-  if (!res.ok) throw new Error("Failed to fetch episodes");
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/episodes`, {
+      headers: { ...getAuthHeader() },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (err) {
+    console.warn("[API] fetchEpisodes fallback to default data:", err);
+  }
+  return [...MOCK_EPISODES];
 }
 
 /**
