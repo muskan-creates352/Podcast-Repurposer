@@ -22,7 +22,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_ORIGINS
-        value: "https://podcast-repurposer-frontend.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
+        value: "https://podcast-repurposer-frontend.onrender.com,https://podcast-repurposer-frontend.vercel.app,http://localhost:3000,*"
 
   - type: web
     name: podcast-repurposer-frontend
