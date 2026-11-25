@@ -24,6 +24,8 @@ import { useToast } from "@/context/ToastContext";
 import { ListenPlayer } from "@/components/audio/ListenPlayer";
 import Link from "next/link";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
 interface YouTubeMetadata {
   videoId: string;
   title: string;
@@ -69,6 +71,119 @@ interface YouTubeIntelligence {
   }>;
 }
 
+const DEMO_METADATA: YouTubeMetadata = {
+  videoId: "dQw4w9WgXcQ",
+  title: "Building Autonomous AI Multi-Agent Pipelines with LangGraph",
+  channel: "AI Engineering Studio",
+  duration: "42:15",
+  thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+  views: "128,450 views",
+};
+
+const DEMO_INTELLIGENCE: YouTubeIntelligence = {
+  overview: {
+    podcast_title: "Building Autonomous AI Multi-Agent Pipelines with LangGraph",
+    explanation: "In this session, the hosts break down the architectural evolution from naive single-prompt LLMs to deterministic multi-agent state machines for scalable media repurposing.",
+    purpose: "Demonstrate how to achieve 95%+ extraction accuracy on 45-minute audio recordings without hallucinated timestamps.",
+    central_idea: "Parallel worker agents (transcription, scoring, formatting) coordinated via LangGraph cyclical state graphs outscore monolithic prompts across speed, cost, and reliability.",
+    subjects_covered: [
+      "Why Single-Prompt LLM Chains Fail on Long Transcripts",
+      "LangGraph State Machines vs Sequential Chains",
+      "Exact Second-Level Timestamp Grounding",
+      "Human-in-the-Loop Review & Approval Flows"
+    ],
+  },
+  summaries: {
+    thirty_seconds: "Monolithic AI prompts fail on long podcasts. Deterministic state machines with parallel worker agents isolate transcription, scoring, and drafting with 1-second audio proof.",
+    one_minute: "In this episode, the creators explore the core vulnerabilities of traditional prompt-based repurposing. When handling 45-minute audio, LLMs hallucinate timestamps and drop key points. By migrating to LangGraph cyclical graphs, each agent handles a single responsibility: Whisper generates segment-level transcripts, a highlight agent scores retention hooks, and a multi-format agent writes LinkedIn posts, blog drafts, and carousel scripts concurrently.",
+    detailed: "The hosts conduct a comprehensive benchmark comparing sequential LLM calls against parallel LangGraph workers across 100 podcast hours. Key findings reveal a 65% reduction in processing latency and zero hallucinated quotes, enabled by mandatory timestamp anchoring.",
+    five_takeaways: [
+      "Trust requires proof: Always ground generated highlights in verifiable second-level audio timestamps.",
+      "Parallel execution reduces total repurposing turnaround time from 15 minutes to under 4 minutes.",
+      "Human editors approve 3.4x more content when presented with in-context viral score rationales.",
+      "Carousels and short-form video scripts yield 4x higher audience retention than generic summaries.",
+      "Never rerun the full pipeline on failure: state graphs allow instant retry of individual broken nodes."
+    ],
+  },
+  topics: [
+    {
+      title: "The Failure Modes of Naive Prompt Chains",
+      timestamp: "02:15",
+      description: "Analysis of context window saturation and token drift on long podcast transcripts.",
+      significance: "Explains why 80% of creator AI tools produce generic, low-retention summaries."
+    },
+    {
+      title: "Designing Parallel Worker Agents",
+      timestamp: "12:40",
+      description: "How to decouple transcription, clip scoring, and multi-format drafting into concurrent nodes.",
+      significance: "Cuts pipeline execution time by over 60% while maintaining deterministic state."
+    },
+    {
+      title: "Human-in-the-Loop Verification Studio",
+      timestamp: "24:30",
+      description: "The 1-click editor review mechanism with timestamp scrubbing and audit logs.",
+      significance: "Guarantees brand safety and editorial accuracy before social distribution."
+    }
+  ],
+  chapters: [
+    {
+      title: "Introduction: The Repurposing Bottleneck",
+      start_time: 0,
+      end_time: 135,
+      timestamp_formatted: "00:00",
+      summary: "Overview of creator burnout and the challenge of scaling long-form audio."
+    },
+    {
+      title: "Why Single Prompts Fail",
+      start_time: 135,
+      end_time: 760,
+      timestamp_formatted: "02:15",
+      summary: "Deep dive into context degradation and hallucinated timestamps in naive prompts."
+    },
+    {
+      title: "LangGraph State Architecture",
+      start_time: 760,
+      end_time: 1470,
+      timestamp_formatted: "12:40",
+      summary: "Step-by-step breakdown of state schema, nodes, and conditional retry edges."
+    },
+    {
+      title: "The Editorial Review Engine",
+      start_time: 1470,
+      end_time: 2100,
+      timestamp_formatted: "24:30",
+      summary: "Designing the human-in-the-loop audit interface for team workflows."
+    },
+    {
+      title: "Conclusion & Future Benchmarks",
+      start_time: 2100,
+      end_time: 2535,
+      timestamp_formatted: "35:00",
+      summary: "Final takeaways and recommendations for AI media automation."
+    }
+  ],
+  takeaways: [
+    {
+      id: 1,
+      point: "Mandatory Timestamp Anchoring",
+      actionable_tip: "Link every generated quote to an audio offset so editors can verify in 1 second.",
+      timestamp: "05:10"
+    },
+    {
+      id: 2,
+      point: "Decoupled Parallel Agents",
+      actionable_tip: "Run clip extraction and blog drafting concurrently after transcription completes.",
+      timestamp: "14:20"
+    },
+    {
+      id: 3,
+      point: "Graceful Fallback Design",
+      actionable_tip: "Always provide browser speech or cached audio when external APIs are rate limited.",
+      timestamp: "28:45"
+    }
+  ]
+};
+
 export default function YouTubeImportPage() {
   const { showToast } = useToast();
 
@@ -87,6 +202,15 @@ export default function YouTubeImportPage() {
   const [chatReplies, setChatReplies] = useState<Array<{ q: string; a: string; timestamp?: string }>>([]);
   const [isAsking, setIsAsking] = useState(false);
 
+  const handleLoadDemoVideo = () => {
+    setUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    setMetadata(DEMO_METADATA);
+    setIntelligence(DEMO_INTELLIGENCE);
+    setCreatedEpisodeId(1);
+    setErrorMessage(null);
+    showToast("Loaded pre-analyzed YouTube Intelligence Workspace!", "success");
+  };
+
   // Validate and fetch authentic YouTube metadata
   const handleFetchMetadata = async (e?: React.FormEvent, targetUrl?: string) => {
     if (e) e.preventDefault();
@@ -103,7 +227,7 @@ export default function YouTubeImportPage() {
     setCreatedEpisodeId(null);
 
     try {
-      const res = await fetch("http://localhost:8000/api/youtube/validate", {
+      const res = await fetch(`${API_BASE}/youtube/validate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: queryUrl }),
@@ -147,7 +271,7 @@ export default function YouTubeImportPage() {
     const stepTimer2 = setTimeout(() => setProcessingStep(3), 2800);
 
     try {
-      const res = await fetch("http://localhost:8000/api/youtube/import", {
+      const res = await fetch(`${API_BASE}/youtube/import`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: url.trim(), language }),
@@ -233,22 +357,93 @@ export default function YouTubeImportPage() {
             </button>
           </div>
 
-          {/* Quick Verified Samples */}
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-zinc-400">
-            <span>Verified public sample:</span>
+          {/* Quick Verified Samples & Instant Demo */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-[11px] text-zinc-400">
+            <div className="flex flex-wrap items-center gap-2">
+              <span>Verified sample:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const sample = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+                  setUrl(sample);
+                  handleFetchMetadata(undefined, sample);
+                }}
+                className="text-rose-500 hover:underline font-mono bg-rose-500/10 px-2 py-0.5 rounded"
+              >
+                youtube.com/watch?v=dQw4w9WgXcQ
+              </button>
+            </div>
+
             <button
               type="button"
-              onClick={() => {
-                const sample = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-                setUrl(sample);
-                handleFetchMetadata(undefined, sample);
-              }}
-              className="text-rose-500 hover:underline font-mono bg-rose-500/10 px-2 py-0.5 rounded"
+              onClick={handleLoadDemoVideo}
+              className="px-3.5 py-1.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 text-xs font-semibold flex items-center gap-2 transition-all shadow-sm cursor-pointer"
             >
-              youtube.com/watch?v=dQw4w9WgXcQ
+              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              <span>⚡ Load Pre-Analyzed AI Workspace</span>
             </button>
           </div>
         </form>
+
+        {/* Instant Demo Workspace Cards when no video is loaded */}
+        {!metadata && !intelligence && (
+          <div className="pt-6 border-t border-zinc-100 dark:border-zinc-800 space-y-4 animate-slide-up">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                Or explore pre-analyzed video & podcast studios:
+              </span>
+              <span className="text-[11px] text-purple-400 font-medium">1-Click Instant Preview</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div
+                onClick={handleLoadDemoVideo}
+                className="p-5 rounded-2xl bg-zinc-900/80 border border-purple-500/30 hover:border-purple-500/60 p-5 cursor-pointer group transition-all space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20">
+                    YouTube Video Intelligence
+                  </span>
+                  <span className="text-xs text-zinc-400 font-mono">42:15 • 5 Chapters</span>
+                </div>
+                <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
+                  Building Autonomous AI Multi-Agent Pipelines with LangGraph
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
+                  Explore full 4-mode workspace: Watch video, Read transcript with timestamp grounding, Listen to ElevenLabs audio overview, and Ask AI queries.
+                </p>
+                <div className="pt-2 flex items-center justify-between text-xs text-purple-400 font-semibold border-t border-zinc-800">
+                  <span>Click to open full workspace</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
+              <Link
+                href="/episodes/1"
+                className="p-5 rounded-2xl bg-zinc-900/80 border border-indigo-500/30 hover:border-indigo-500/60 p-5 group transition-all space-y-3 flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                      Podcast Studio (Ep 101)
+                    </span>
+                    <span className="text-xs text-zinc-400 font-mono">40:50 • Ready</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
+                    Ep 101: The Future of Multimodal AI Agents
+                  </h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
+                    Conversational Overview, Podcast Brief, Audience Mode (5 profiles), AI Vocabulary Extractor, and Smart Timeline with ElevenLabs TTS player.
+                  </p>
+                </div>
+                <div className="pt-2 flex items-center justify-between text-xs text-indigo-400 font-semibold border-t border-zinc-800">
+                  <span>Open Episode Studio</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Error message / Upload fallback */}
         {errorMessage && (

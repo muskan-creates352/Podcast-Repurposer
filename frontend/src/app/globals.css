@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: #fcfcfd;
-    --foreground: #09090b;
-    --card: #ffffff;
-    --card-foreground: #09090b;
-    --border: #e2e8f0;
-    --muted: #64748b;
-    --muted-bg: #f1f5f9;
-  }
-
-  .dark {
-    --background: #101426;
+    --background: #080B18;
     --foreground: #F8FAFC;
     --card: #171E35;
     --card-foreground: #F8FAFC;
     --border: #232B4E;
     --muted: #94A3B8;
-    --muted-bg: #080B18;
+    --muted-bg: #101426;
+  }
+
+  .dark {
+    --background: #080B18;
+    --foreground: #F8FAFC;
+    --card: #171E35;
+    --card-foreground: #F8FAFC;
+    --border: #232B4E;
+    --muted: #94A3B8;
+    --muted-bg: #101426;
   }
 
   body {

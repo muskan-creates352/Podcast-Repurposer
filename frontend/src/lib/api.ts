@@ -687,4 +687,37 @@ export async function fetchSmartTimeline(episodeId: string | number): Promise<Ti
   return res.json();
 }
 
+// -------------------------------------------------------------
+// ElevenLabs Premium TTS API
+// -------------------------------------------------------------
+export interface SynthesizeResponse {
+  status: "success" | "fallback" | "error";
+  audio_url?: string;
+  cache_key?: string;
+  duration_estimated_seconds: number;
+  voice_used?: string;
+  model_used?: string;
+  engine: "elevenlabs" | "browser_fallback";
+  is_cached?: boolean;
+  message?: string;
+  cleaned_text: string;
+}
+
+export async function synthesizeSpeech(
+  text: string,
+  voiceId?: string,
+  modelId?: string
+): Promise<SynthesizeResponse> {
+  const res = await fetch(`${BASE_URL}/tts/synthesize`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getAuthHeader() },
+    body: JSON.stringify({ text, voice_id: voiceId, model_id: modelId }),
+  });
+  if (!res.ok) {
+    throw new Error("TTS request failed");
+  }
+  return res.json();
+}
+
+
 

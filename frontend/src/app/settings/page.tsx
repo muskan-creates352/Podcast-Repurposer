@@ -31,6 +31,9 @@ import {
   Check,
 } from "lucide-react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const DOCS_URL = API_BASE.replace(/\/api\/?$/, "/docs");
+
 type SettingsTab =
   | "general"
   | "notifications"
@@ -95,7 +98,7 @@ export default function SettingsPage() {
   const checkBackend = async () => {
     setBackendStatus("checking");
     try {
-      const res = await fetch("http://localhost:8000/api/health", { cache: "no-store" });
+      const res = await fetch(`${API_BASE}/health`, { cache: "no-store" });
       if (res.ok) {
         setBackendStatus("online");
       } else {
@@ -108,7 +111,7 @@ export default function SettingsPage() {
 
   const checkGroqStatus = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/groq/status");
+      const res = await fetch(`${API_BASE}/groq/status`);
       if (res.ok) {
         const data = await res.json();
         setGroqStatus(data);
@@ -123,7 +126,7 @@ export default function SettingsPage() {
     }
     setIsSavingGroq(true);
     try {
-      const res = await fetch("http://localhost:8000/api/groq/config", {
+      const res = await fetch(`${API_BASE}/groq/config`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ api_key: groqKey.trim() }),
@@ -158,7 +161,7 @@ export default function SettingsPage() {
 
   const handleResetData = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/episodes", { cache: "no-store" });
+      const res = await fetch(`${API_BASE}/episodes`, { cache: "no-store" });
       if (res.ok) {
         showToast("Sample demo data re-synchronized!", "success");
       } else {
@@ -662,7 +665,7 @@ export default function SettingsPage() {
                   <input
                     type="text"
                     readOnly
-                    value="http://localhost:8000/api"
+                    value={API_BASE}
                     className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-mono text-zinc-700 dark:text-zinc-300"
                   />
                 </div>
@@ -992,7 +995,7 @@ export default function SettingsPage() {
               {/* Quick Links */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <a
-                  href="http://localhost:8000/docs"
+                  href={DOCS_URL}
                   target="_blank"
                   rel="noreferrer"
                   className="p-4 rounded-2xl bg-white dark:bg-[#171E35] border border-zinc-200/80 dark:border-zinc-800/80 hover:border-brand-500 transition-all flex items-start justify-between shadow-sm group"

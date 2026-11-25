@@ -23,6 +23,8 @@ import {
   Save,
 } from "lucide-react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
 function ReviewStudioContent() {
   const { showToast } = useToast();
   const router = useRouter();
@@ -54,7 +56,7 @@ function ReviewStudioContent() {
   // Fetch transcript for selected episode
   const [transcript, setTranscript] = useState<Transcript | null>(null);
   useEffect(() => {
-    fetch(`http://localhost:8000/api/episodes/${selectedEpisodeId}/transcript`)
+    fetch(`${API_BASE}/episodes/${selectedEpisodeId}/transcript`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setTranscript(data))
       .catch(() => setTranscript(null));
@@ -100,7 +102,7 @@ function ReviewStudioContent() {
 
   const handleSaveClipEdit = async (clipId: string) => {
     try {
-      await fetch(`http://localhost:8000/api/clips/${clipId}/review`, {
+      await fetch(`${API_BASE}/clips/${clipId}/review`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "approved", text: editedClipText }),

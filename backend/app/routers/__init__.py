@@ -11,6 +11,7 @@ from app.routers.audit import router as audit_router
 from app.routers.search import router as search_router
 from app.routers.youtube import router as youtube_router
 from app.routers.groq import router as groq_router
+from app.routers.tts import router as tts_router
 
 __all__ = [
     "auth_router",
@@ -26,4 +27,5 @@ __all__ = [
     "search_router",
     "youtube_router",
     "groq_router",
+    "tts_router",
 ]

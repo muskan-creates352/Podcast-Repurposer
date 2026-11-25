@@ -25,13 +25,20 @@ class Settings(BaseSettings):
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        env_allowed = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS")
+        if env_allowed and (not v or v == ["http://localhost:3000", "http://127.0.0.1:3000"]):
+            v = env_allowed
         if isinstance(v, str):
+            if v == "*":
+                return ["*"]
             if v.startswith("[") and v.endswith("]"):
                 try:
                     return json.loads(v)
                 except Exception:
                     pass
-            return [i.strip() for i in v.split(",") if i.strip()]
+            origins = [i.strip() for i in v.split(",") if i.strip()]
+            if origins:
+                return origins
         elif isinstance(v, list):
             return v
         return ["http://localhost:3000", "http://127.0.0.1:3000"]
@@ -52,6 +59,11 @@ class Settings(BaseSettings):
 
     # Gemini GenAI API Key (Secondary/Fallback)
     GEMINI_API_KEY: str = ""
+
+    # ElevenLabs Premium TTS Configuration
+    ELEVENLABS_API_KEY: str = ""
+    ELEVENLABS_VOICE_ID: str = "21m00Tcm4TlvDq8ikWAM"  # Default: Rachel (warm, calm, natural conversational narrator)
+    ELEVENLABS_MODEL_ID: str = "eleven_multilingual_v2" # High-fidelity multilingual podcast narration model
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -31,6 +31,8 @@ import {
   Flame,
 } from "lucide-react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
 interface SearchMatch {
   id?: string;
   episode_id: number | string;
@@ -142,7 +144,7 @@ function SearchArchiveContent() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const res = await fetch("http://localhost:8000/api/search/stats", { cache: "no-store" });
+        const res = await fetch(`${API_BASE}/search/stats`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           setStats(data);
@@ -233,7 +235,7 @@ function SearchArchiveContent() {
       if (typeFilter !== "all") params.set("content_type", typeFilter);
       params.set("sort", sort);
 
-      const res = await fetch(`http://localhost:8000/api/search?${params.toString()}`);
+      const res = await fetch(`${API_BASE}/search?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setResults(data);

@@ -11,10 +11,18 @@ services:
         value: sqlite:///./podcast_repurposer.db
       - key: GROQ_API_KEY
         sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        value: 21m00Tcm4TlvDq8ikWAM
+      - key: ELEVENLABS_MODEL_ID
+        value: eleven_multilingual_v2
+      - key: GEMINI_API_KEY
+        sync: false
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_ORIGINS
-        value: "https://podcast-repurposer-frontend.vercel.app,http://localhost:3000"
+        value: "https://podcast-repurposer-frontend.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
 
   - type: web
     name: podcast-repurposer-frontend

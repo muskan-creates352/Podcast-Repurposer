@@ -47,6 +47,7 @@ ENV/
 # SQLite Databases
 *.db
 *.sqlite3
+*.backup
 
 # Uploaded Files
 uploads/

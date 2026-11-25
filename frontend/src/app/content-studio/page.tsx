@@ -25,11 +25,13 @@ import {
   ChevronRight,
   TrendingUp,
   Target,
-  ArrowRight
+  ArrowRight,
+  Volume2
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { downloadFile } from "@/lib/utils";
 import { auditContentQuality, refineContentApi, fetchEpisodeStrategy, StrategyRecommendation } from "@/lib/api";
+import { ListenPlayer } from "@/components/audio/ListenPlayer";
 
 type ContentFormat = 
   | "instagram_caption"
@@ -433,6 +435,7 @@ export default function ContentStudioPage() {
   const [isRefining, setIsRefining] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
+  const [showListenPlayer, setShowListenPlayer] = useState(false);
 
   // Quality Audit state
   const [auditScores, setAuditScores] = useState({
@@ -858,8 +861,33 @@ export default function ContentStudioPage() {
                 <Copy className="w-3.5 h-3.5" />
                 <span>Copy</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setShowListenPlayer(!showListenPlayer)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  showListenPlayer
+                    ? "bg-purple-600 text-white shadow-glow"
+                    : "bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                }`}
+                title="Listen with ElevenLabs AI Voice"
+              >
+                <Volume2 className="w-3.5 h-3.5" />
+                <span>{showListenPlayer ? "Hide Audio" : "Listen AI Voice"}</span>
+              </button>
             </div>
           </div>
+
+          {/* ElevenLabs Interactive Audio Narration Player */}
+          {showListenPlayer && (
+            <div className="animate-slide-up">
+              <ListenPlayer
+                text={displayText}
+                title={`${activeFormatDef.name} Voice Preview`}
+                subtitle="ElevenLabs Multi-Lingual AI Voice Narration"
+              />
+            </div>
+          )}
 
           {/* Quick Content Refinement Controls Toolbar (Phase 8) */}
           <div className="bg-white dark:bg-[#171E35] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 shadow-sm flex flex-wrap items-center gap-2">

@@ -22,6 +22,7 @@ from app.routers import (
     search_router,
     youtube_router,
     groq_router,
+    tts_router,
 )
 from app.services.episode_service import ensure_upload_dir
 
@@ -61,11 +62,15 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS Middleware (configured for Next.js frontend at http://localhost:3000)
+# CORS Middleware: Localhost + Deployed Vercel Frontend
+cors_origins = settings.BACKEND_CORS_ORIGINS if isinstance(settings.BACKEND_CORS_ORIGINS, list) else [settings.BACKEND_CORS_ORIGINS]
+allow_all = "*" in cors_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
-    allow_credentials=True,
+    allow_origins=["*"] if allow_all else cors_origins,
+    allow_origin_regex=None if allow_all else r"^https:\/\/.*\.vercel\.app$",
+    allow_credentials=True if not allow_all else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -84,6 +89,7 @@ app.include_router(audit_router, prefix=settings.API_PREFIX)
 app.include_router(search_router, prefix=settings.API_PREFIX)
 app.include_router(youtube_router, prefix=settings.API_PREFIX)
 app.include_router(groq_router, prefix=settings.API_PREFIX)
+app.include_router(tts_router, prefix=settings.API_PREFIX)
 
 # Support direct routes and legacy aliases seamlessly
 from app.routers.dashboard import read_stats, read_weekly, read_agents_status
