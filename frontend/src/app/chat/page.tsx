@@ -57,8 +57,10 @@ export default function ChatbotPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Load live episodes from backend
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
   useEffect(() => {
-    fetch("http://localhost:8000/api/episodes")
+    fetch(`${apiBase}/episodes`)
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
@@ -67,7 +69,7 @@ export default function ChatbotPage() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [apiBase]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -94,7 +96,7 @@ export default function ChatbotPage() {
         content: m.text,
       }));
 
-      const res = await fetch("http://localhost:8000/api/groq/chat", {
+      const res = await fetch(`${apiBase}/groq/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

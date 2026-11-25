@@ -155,8 +155,8 @@ export default function DashboardPage() {
             isStatsLoading
               ? "..."
               : typeof stats?.avg_processing_time === "number"
-              ? `${stats.avg_processing_time}s`
-              : stats?.avg_processing_time ?? "42.5s"
+              ? `${stats.avg_processing_time} min`
+              : stats?.avg_processing_time ? `${stats.avg_processing_time} min` : "4.2 min"
           }
           subtitle="Whisper + Groq AI"
           trend="0.8m faster"

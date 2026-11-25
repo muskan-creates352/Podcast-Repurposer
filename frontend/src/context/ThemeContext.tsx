@@ -14,25 +14,24 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    if (savedTheme) {
+    try {
+      const savedTheme = (localStorage.getItem("theme") as Theme | null) || "dark";
       setThemeState(savedTheme);
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const initial = prefersDark ? "dark" : "light";
-      setThemeState(initial);
-      document.documentElement.classList.toggle("dark", initial === "dark");
+    } catch {
+      document.documentElement.classList.add("dark");
     }
-    setMounted(true);
   }, []);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem("theme", newTheme);
+    try {
+      localStorage.setItem("theme", newTheme);
+    } catch {
+      // ignore
+    }
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
@@ -43,8 +42,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
-      {/* Avoid flash of unstyled content */}
-      <div className={mounted ? "" : "invisible"}>{children}</div>
+      {children}
     </ThemeContext.Provider>
   );
 }

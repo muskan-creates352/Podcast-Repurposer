@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: podcast-repurposer-backend
+    runtime: python
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        value: sqlite:///./podcast_repurposer.db
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: "https://podcast-repurposer-frontend.vercel.app,http://localhost:3000"
+
+  - type: web
+    name: podcast-repurposer-frontend
+    runtime: node
+    buildCommand: "npm --prefix frontend install && npm --prefix frontend run build"
+    startCommand: "npm --prefix frontend start"
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: "https://podcast-repurposer-backend.onrender.com/api"

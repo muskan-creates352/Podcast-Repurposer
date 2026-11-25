@@ -60,6 +60,8 @@ export function WeeklyChart({ data }: WeeklyChartProps) {
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#71717a", fontSize: 12 }}
+              domain={[0, 60]}
+              ticks={[0, 15, 30, 45, 60]}
             />
             <Tooltip
               cursor={{ fill: "rgba(139, 92, 246, 0.12)", radius: 6 }}

@@ -51,7 +51,7 @@ export function PipelineCard({ agents }: PipelineCardProps) {
       </div>
 
       <div className="mt-4 space-y-3">
-        {agents.map((agent) => {
+        {agents.slice(0, 3).map((agent) => {
           const isRunning = agent.status === "running";
           const isCompleted = agent.status === "completed";
 

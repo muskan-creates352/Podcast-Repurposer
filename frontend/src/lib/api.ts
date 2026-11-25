@@ -485,3 +485,80 @@ export async function fetchExportedClips(): Promise<{
   }
   return [];
 }
+
+// -------------------------------------------------------------
+// Strategy & Content Quality Reviewer API
+// -------------------------------------------------------------
+export interface StrategyRecommendation {
+  format: string;
+  topic: string;
+  reason: string;
+  target_audience: string;
+  suggested_hook: string;
+  key_message: string;
+  content_potential: string;
+  suggested_timestamps?: string;
+}
+
+export interface StrategyResponse {
+  episode_id: number;
+  episode_title: string;
+  total_recommendations: number;
+  recommendations: StrategyRecommendation[];
+}
+
+export async function fetchEpisodeStrategy(episodeId: string | number): Promise<StrategyResponse> {
+  const cleanId = String(episodeId).replace("ep_", "");
+  const res = await fetch(`${BASE_URL}/episodes/${cleanId}/strategy`, {
+    headers: { ...getAuthHeader() },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch repurposing strategy");
+  }
+  return res.json();
+}
+
+export interface ContentAuditResult {
+  hook_strength: number;
+  readability: number;
+  platform_suitability: number;
+  overall_score: number;
+  strengths: string[];
+  weaknesses: string[];
+  recommended_improvements: string[];
+}
+
+export async function auditContentQuality(text: string, formatType: string = "social"): Promise<ContentAuditResult> {
+  const res = await fetch(`${BASE_URL}/content/audit-quality`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getAuthHeader() },
+    body: JSON.stringify({ text, format_type: formatType }),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to audit content quality");
+  }
+  return res.json();
+}
+
+export interface ContentRefineResult {
+  refined_text: string;
+  action_applied: string;
+  improvements_made: string[];
+}
+
+export async function refineContentApi(
+  text: string,
+  action: "make_shorter" | "make_longer" | "make_engaging" | "improve_hook" | "professional_polish" | "apply_improvements",
+  formatType: string = "social"
+): Promise<ContentRefineResult> {
+  const res = await fetch(`${BASE_URL}/content/refine`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getAuthHeader() },
+    body: JSON.stringify({ text, action, format_type: formatType }),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to refine content");
+  }
+  return res.json();
+}
+
