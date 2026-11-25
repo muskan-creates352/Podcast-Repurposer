@@ -2,6 +2,7 @@ services:
   - type: web
     name: podcast-repurposer-backend
     runtime: python
+    plan: free
     buildCommand: "pip install -r backend/requirements.txt"
     startCommand: "uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT"
     envVars:
@@ -22,11 +23,12 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_ORIGINS
-        value: "https://podcast-repurposer-frontend.onrender.com,https://podcast-repurposer-frontend.vercel.app,http://localhost:3000,*"
+        value: "https://podcast-repurposer-frontend.onrender.com,https://*.vercel.app,http://localhost:3000,*"
 
   - type: web
     name: podcast-repurposer-frontend
     runtime: node
+    plan: free
     buildCommand: "npm --prefix frontend install && npm --prefix frontend run build"
     startCommand: "npm --prefix frontend start"
     envVars:
