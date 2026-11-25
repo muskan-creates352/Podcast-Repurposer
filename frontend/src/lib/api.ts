@@ -30,7 +30,9 @@ import {
 // ARCHITECTURE RULE: Central flag to switch between mock data and real FastAPI backend
 export const USE_MOCK = true;
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+export const BACKEND_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
+const BASE_URL = API_BASE_URL;
 
 function getAuthHeader(): HeadersInit {
   if (typeof window !== "undefined") {

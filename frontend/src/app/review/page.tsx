@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchEpisodes, fetchClips, fetchGeneratedContent, updateClipStatus, updateContentBody } from "@/lib/api";
+import { API_BASE_URL, fetchEpisodes, fetchClips, fetchGeneratedContent, updateClipStatus, updateContentBody } from "@/lib/api";
 import { useToast } from "@/context/ToastContext";
 import { Transcript } from "@/types";
 import {
@@ -54,7 +54,7 @@ function ReviewStudioContent() {
   // Fetch transcript for selected episode
   const [transcript, setTranscript] = useState<Transcript | null>(null);
   useEffect(() => {
-    fetch(`http://localhost:8000/api/episodes/${selectedEpisodeId}/transcript`)
+    fetch(`${API_BASE_URL}/episodes/${selectedEpisodeId}/transcript`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setTranscript(data))
       .catch(() => setTranscript(null));
@@ -76,7 +76,7 @@ function ReviewStudioContent() {
     router.push(`/review?episode=${id}`);
   };
 
-  const handleApproveClip = async (id: string, _text?: string) => {
+  const handleApproveClip = async (id: string) => {
     try {
       await updateClipStatus(id, "approved");
       showToast("Clip approved for publishing!", "success");
@@ -100,7 +100,7 @@ function ReviewStudioContent() {
 
   const handleSaveClipEdit = async (clipId: string) => {
     try {
-      await fetch(`http://localhost:8000/api/clips/${clipId}/review`, {
+      await fetch(`${API_BASE_URL}/clips/${clipId}/review`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "approved", text: editedClipText }),
@@ -515,7 +515,7 @@ function ReviewStudioContent() {
           </div>
 
           <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-            {(transcript?.segments || []).map((seg: any, idx: number) => (
+            {(transcript?.segments || []).map((seg, idx: number) => (
               <div
                 key={idx}
                 className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800/80 space-y-1"

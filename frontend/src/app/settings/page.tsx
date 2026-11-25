@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useToast } from "@/context/ToastContext";
+import { API_BASE_URL, BACKEND_ORIGIN } from "@/lib/api";
 import {
   Settings,
   User,
@@ -84,7 +85,7 @@ export default function SettingsPage() {
   const checkBackend = async () => {
     setBackendStatus("checking");
     try {
-      const res = await fetch("http://localhost:8000/api/health", { cache: "no-store" });
+      const res = await fetch(`${API_BASE_URL}/health`, { cache: "no-store" });
       if (res.ok) {
         setBackendStatus("online");
       } else {
@@ -110,7 +111,7 @@ export default function SettingsPage() {
 
   const handleResetData = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/episodes", { cache: "no-store" });
+      const res = await fetch(`${API_BASE_URL}/episodes`, { cache: "no-store" });
       if (res.ok) {
         showToast("Sample demo data re-synchronized!", "success");
       } else {
@@ -497,7 +498,7 @@ export default function SettingsPage() {
                   <input
                     type="text"
                     readOnly
-                    value="http://localhost:8000/api"
+                    value={API_BASE_URL}
                     className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-mono text-zinc-700 dark:text-zinc-300"
                   />
                 </div>
@@ -827,7 +828,7 @@ export default function SettingsPage() {
               {/* Quick Links */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <a
-                  href="http://localhost:8000/docs"
+                  href={`${BACKEND_ORIGIN}/docs`}
                   target="_blank"
                   rel="noreferrer"
                   className="p-4 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-zinc-800/80 hover:border-brand-500 transition-all flex items-start justify-between shadow-sm group"

@@ -61,6 +61,7 @@ export interface TranscriptSegment {
   speaker: string;
   text: string;
   low_confidence?: boolean;
+  confidence?: number;
 }
 
 export interface Transcript {

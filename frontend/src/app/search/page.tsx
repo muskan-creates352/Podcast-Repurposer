@@ -1,19 +1,17 @@
 "use client";
 
 import React, { useState, useEffect, Suspense, useMemo, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useToast } from "@/context/ToastContext";
+import { API_BASE_URL } from "@/lib/api";
 import {
   CATEGORIES,
   getEpisodeAssets,
-  EpisodeAssetInfo,
 } from "@/lib/episodeAssets";
 import {
   Search,
   Sparkles,
-  Radio,
   Filter,
   Clock,
   ArrowRight,
@@ -25,23 +23,13 @@ import {
   RotateCcw,
   SlidersHorizontal,
   Volume2,
-  Layers,
   Cpu,
   Hash,
-  FileText,
-  Film,
-  User,
   ChevronDown,
-  Database,
   CheckCircle2,
-  TrendingUp,
-  Calendar,
-  Compass,
   ArrowUpRight,
-  Mic,
   Headphones,
   Flame,
-  BookOpen,
 } from "lucide-react";
 
 interface SearchMatch {
@@ -72,33 +60,6 @@ const POPULAR_TAGS = [
   "vector search",
   "repurposing",
   "monetization",
-];
-
-const SEARCH_SUGGESTIONS = [
-  {
-    title: "Timestamp Grounding",
-    query: "Where did we discuss timestamp grounding and hallucination prevention?",
-    tag: "Provenance",
-    category: "Technology",
-  },
-  {
-    title: "Multi-Agent Pipelines",
-    query: "LangGraph multi-agent parallel state machine execution",
-    tag: "Architecture",
-    category: "Education",
-  },
-  {
-    title: "Micro-SaaS Monetization",
-    query: "Creator monetization and scalable micro-SaaS architecture",
-    tag: "Business",
-    category: "Business",
-  },
-  {
-    title: "Viral Hook Extraction",
-    query: "How automated pipelines repurpose long recordings into 60-second clips",
-    tag: "Creator",
-    category: "Creator Economy",
-  },
 ];
 
 type SearchMode = "hybrid" | "keyword";
@@ -138,7 +99,6 @@ function highlightMatch(text: string, query: string) {
 
 function SearchArchiveContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const { showToast } = useToast();
 
   const initialQuery = searchParams.get("q") || "";
@@ -183,7 +143,7 @@ function SearchArchiveContent() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const res = await fetch("http://localhost:8000/api/search/stats", { cache: "no-store" });
+        const res = await fetch(`${API_BASE_URL}/search/stats`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           setStats(data);
@@ -274,7 +234,7 @@ function SearchArchiveContent() {
       if (typeFilter !== "all") params.set("content_type", typeFilter);
       params.set("sort", sort);
 
-      const res = await fetch(`http://localhost:8000/api/search?${params.toString()}`);
+      const res = await fetch(`${API_BASE_URL}/search?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setResults(data);
